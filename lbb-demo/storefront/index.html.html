@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Little Bit Bakery</title>
+<link href="https://fonts.googleapis.com/css2?family=Unna:ital,wght@0,400;0,700;1,400;1,700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--paper:#F6F2E8;--paper2:#EDE8D8;--ink:#0C0C0A;--ink2:#2C2C28;--ink3:#6C6C60;--sage:#4A6832;--sage2:#354C24;--rule:rgba(12,12,10,.14);--rule2:rgba(12,12,10,.07);--sidebar-w:220px;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+html{scroll-behavior:smooth;}
+body{background:var(--paper);color:var(--ink);font-family:'Old Standard TT',serif;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");background-size:150px;}
+
+/* DESKTOP SIDEBAR */
+.sidebar{display:none;}
+@media(min-width:768px){
+  .sidebar{display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--ink);border-right:3px double var(--paper2);z-index:500;}
+  .sb-brand{padding:28px 20px 20px;border-bottom:1px solid rgba(246,242,232,.12);}
+  .sb-date{font-family:'Barlow',sans-serif;font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:rgba(246,242,232,.35);margin-bottom:6px;}
+  .sb-title{font-family:'Unna',serif;font-size:20px;font-weight:700;color:var(--paper);letter-spacing:.04em;line-height:1.1;}
+  .sb-tagline{font-family:'Old Standard TT',serif;font-size:9px;font-style:italic;color:rgba(246,242,232,.35);margin-top:4px;}
+  .sb-drop{padding:14px 20px;border-bottom:1px solid rgba(246,242,232,.08);font-family:'Barlow',sans-serif;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,242,232,.4);}
+  .sb-nav{flex:1;padding:16px 0;}
+  .sb-ni{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;background:none;border:none;width:100%;text-align:left;transition:background .18s;}
+  .sb-ni:hover{background:rgba(246,242,232,.06);}
+  .sb-ni.active{background:rgba(246,242,232,.1);}
+  .sb-ni svg{width:14px;height:14px;stroke:rgba(246,242,232,.35);stroke-width:1.5;fill:none;flex-shrink:0;transition:stroke .2s;}
+  .sb-ni.active svg,.sb-ni:hover svg{stroke:var(--paper);}
+  .sb-ni span{font-family:'Barlow',sans-serif;font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,242,232,.35);transition:color .2s;}
+  .sb-ni.active span,.sb-ni:hover span{color:var(--paper);}
+  .sb-pip{width:3px;height:3px;border-radius:50%;background:var(--sage);margin-left:auto;opacity:0;transition:opacity .2s;}
+  .sb-ni.active .sb-pip{opacity:1;}
+  .sb-notify{padding:0 16px 24px;}
+  .sb-nbtn{width:100%;background:var(--sage);color:var(--paper);border:none;padding:10px;font-family:'Barlow',sans-serif;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+  .sb-nbtn:hover{background:var(--sage2);}
+  .main-wrap{margin-left:var(--sidebar-w);}
+  header{display:none;}
+  nav.bottom-nav{display:none;}
+}
+
+/* MOBILE HEADER */
+header{position:fixed;top:0;left:0;right:0;z-index:500;background:var(--paper);border-bottom:3px double var(--ink);}
+.header-top{padding:10px 22px 8px;text-align:center;border-bottom:1px solid var(--ink);}
+.header-date{font-family:'Barlow',sans-serif;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px;}
+.header-title{font-family:'Unna',serif;font-size:22px;font-weight:700;letter-spacing:.06em;color:var(--ink);}
+.header-tagline{font-family:'Old Standard TT',serif;font-size:9px;font-style:italic;color:var(--ink3);margin-top:2px;letter-spacing:.08em;}
+.header-nav{padding:6px 22px;display:flex;align-items:center;justify-content:space-between;}
+.hn-left{font-family:'Barlow',sans-serif;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);}
+.hdr-nb{background:var(--ink);color:var(--paper);border:none;padding:5px 14px;font-family:'Barlow',sans-serif;font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+.hdr-nb:hover{background:var(--sage);}
+
+/* HERO */
+.hero{padding-top:98px;min-height:100svh;display:flex;flex-direction:column;}
+@media(min-width:768px){.hero{padding-top:0;}}
+.hero-inner{flex:1;padding:24px 22px 28px;}
+.master-rule{height:4px;background:var(--ink);margin-bottom:3px;}
+.master-rule2{height:1px;background:var(--ink);margin-bottom:20px;}
+.vol-line{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.vol-text{font-family:'Barlow',sans-serif;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);}
+.main-headline{font-family:'Unna',serif;font-size:clamp(44px,12vw,62px);font-weight:700;line-height:.9;color:var(--ink);margin-bottom:8px;letter-spacing:-.01em;}
+.deck{font-family:'Old Standard TT',serif;font-size:13px;font-style:italic;color:var(--ink2);line-height:1.6;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--rule);}
+.byline{font-family:'Barlow',sans-serif;font-size:9px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);margin-bottom:20px;}
+
+/* DROP CARD */
+.dcard{border:1px solid var(--ink);padding:18px 18px 16px;position:relative;margin-bottom:4px;}
+.dcard::before,.dcard::after{content:'';position:absolute;width:8px;height:8px;border-color:var(--sage);border-style:solid;}
+.dcard::before{top:4px;left:4px;border-width:1px 0 0 1px;}
+.dcard::after{bottom:4px;right:4px;border-width:0 1px 1px 0;}
+.dc-head{border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:baseline;}
+.dc-kicker{font-family:'Barlow',sans-serif;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--sage);}
+.dc-tag{font-family:'Barlow',sans-serif;font-size:9px;letter-spacing:.1em;color:var(--ink3);}
+.dc-title{font-family:'Unna',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+.dc-date{font-family:'Old Standard TT',serif;font-size:10px;font-style:italic;color:var(--ink3);margin-bottom:14px;}
+.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);margin-bottom:14px;}
+.cdu{padding:10px 4px;text-align:center;border-right:1px solid var(--rule);}
+.cdu:last-child{border-right:none;}
+.cdn{display:block;font-family:'Unna',serif;font-size:26px;font-weight:700;color:var(--ink);line-height:1;}
+.cdl{display:block;font-family:'Barlow',sans-serif;font-size:7px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-top:3px;}
+.pbtn{width:100%;background:var(--ink);color:var(--paper);border:none;padding:14px;font-family:'Barlow',sans-serif;font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .1s;}
+.pbtn:hover{background:var(--sage);}
+.pbtn:active{transform:scale(.98);}
+
+/* SECTION HEADERS */
+.section-head{display:flex;align-items:center;gap:0;padding:28px 22px 0;}
+.sh-rule{flex:1;height:1px;background:var(--ink);}
+.sh-label{font-family:'Barlow',sans-serif;font-size:9px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);padding:0 12px;background:var(--paper);}
+.sh-rule2{height:3px;background:var(--ink);margin:4px 22px 0;}
+
+/* MENU */
+.msec{padding:16px 22px 40px;}
+.mh{font-family:'Unna',serif;font-size:28px;font-weight:700;font-style:italic;color:var(--ink);margin-bottom:20px;}
+.mg-wrap{margin-bottom:24px;}
+.mcat{font-family:'Barlow',sans-serif;font-size:9px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);border-top:2px solid var(--ink);border-bottom:1px solid var(--rule);padding:6px 0;margin-bottom:2px;}
+.mrow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--rule2);gap:10px;cursor:pointer;transition:padding-left .18s;}
+.mrow:hover{padding-left:6px;}
+.mrow:last-child{border-bottom:none;}
+.mrn{font-family:'Unna',serif;font-size:17px;font-style:italic;color:var(--ink);margin-bottom:2px;}
+.mrno{font-family:'Old Standard TT',serif;font-size:10px;color:var(--ink3);}
+.mrr{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.ptag{font-family:'Barlow',sans-serif;font-size:8px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);border:1px solid rgba(74,104,50,.35);padding:2px 7px;}
+.mrp{font-family:'Unna',serif;font-size:17px;font-weight:700;color:var(--ink2);}
+.abtn{width:26px;height:26px;border:1px solid var(--rule);background:none;color:var(--sage);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.abtn:hover{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+
+/* CAROUSEL */
+.carousel-wrap{padding:0 22px;}
+.carousel{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:var(--paper2);border:1px solid var(--rule);}
+.carousel-slides{display:flex;height:100%;transition:transform .55s ease;}
+.carousel-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:var(--paper2);}
+.c-ph-icon{opacity:.2;}
+.c-ph-lbl{font-family:'Barlow',sans-serif;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);}
+.c-ph-sub{font-family:'Old Standard TT',serif;font-size:11px;font-style:italic;color:var(--ink3);}
+.carousel-dots{display:flex;justify-content:center;gap:7px;padding:10px 0 6px;}
+.cdot{width:5px;height:5px;border-radius:50%;background:var(--rule);border:none;padding:0;cursor:pointer;transition:background .2s;}
+.cdot.active{background:var(--sage);}
+
+/* ABOUT */
+.about-block{margin:10px 22px 0;padding:24px;border:1px solid var(--ink);position:relative;}
+.about-block::before,.about-block::after{content:'';position:absolute;width:8px;height:8px;border-color:var(--sage);border-style:solid;}
+.about-block::before{top:4px;left:4px;border-width:1px 0 0 1px;}
+.about-block::after{bottom:4px;right:4px;border-width:0 1px 1px 0;}
+.about-kicker{font-family:'Barlow',sans-serif;font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin-bottom:10px;}
+.about-name{font-family:'Unna',serif;font-size:20px;font-weight:700;color:var(--ink);margin-bottom:16px;}
+.about-body{font-family:'Old Standard TT',serif;font-size:13px;line-height:1.75;color:var(--ink2);}
+.about-body p{margin-bottom:12px;}
+.about-body p:last-child{margin-bottom:0;}
+.about-body em{font-style:italic;}
+.about-attr{font-family:'Barlow',sans-serif;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);padding-top:14px;margin-top:14px;border-top:1px solid var(--rule);}
+
+/* SOCIALS */
+.socials{display:flex;margin:0 22px;border:1px solid var(--rule);border-top:none;}
+.soc-link{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 6px;border-right:1px solid var(--rule);text-decoration:none;transition:background .18s;}
+.soc-link:last-child{border-right:none;}
+.soc-link:hover{background:var(--paper2);}
+.soc-link svg{width:13px;height:13px;stroke:var(--ink3);stroke-width:1.5;fill:none;flex-shrink:0;}
+.soc-link span{font-family:'Barlow',sans-serif;font-size:8px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);}
+
+/* GALLERY */
+.gallery-block{margin:0 22px;padding:22px 20px;border:1px solid var(--rule);border-top:none;text-align:center;}
+.gallery-kicker{font-family:'Barlow',sans-serif;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;}
+.gallery-title{font-family:'Unna',serif;font-size:20px;font-weight:700;font-style:italic;color:var(--ink);margin-bottom:10px;}
+.gallery-badge{display:inline-block;font-family:'Barlow',sans-serif;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--sage);border:1px solid rgba(74,104,50,.35);padding:5px 14px;margin-bottom:8px;}
+.gallery-sub{font-family:'Old Standard TT',serif;font-size:11px;font-style:italic;color:var(--ink3);line-height:1.6;}
+
+/* FAQ */
+.faq-wrap{padding:0 22px 48px;}
+.faq-item{border-top:1px solid var(--rule);}
+.faq-item:last-child{border-bottom:1px solid var(--rule);}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;padding:15px 0;background:none;border:none;cursor:pointer;text-align:left;gap:12px;}
+.faq-qt{font-family:'Old Standard TT',serif;font-size:13px;font-weight:700;color:var(--ink);line-height:1.4;}
+.faq-icon{font-family:'Barlow',sans-serif;font-size:18px;color:var(--ink3);flex-shrink:0;line-height:1;transition:transform .25s;}
+.faq-item.open .faq-icon{transform:rotate(45deg);color:var(--sage);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.faq-item.open .faq-a{max-height:500px;}
+.faq-ai{font-family:'Old Standard TT',serif;font-size:12px;color:var(--ink2);line-height:1.75;padding-bottom:16px;}
+.faq-ai em{font-style:italic;color:var(--sage);}
+
+/* BOTTOM NAV */
+nav.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:500;background:var(--paper);border-top:3px double var(--ink);display:flex;justify-content:space-around;padding:10px 0 max(12px,env(safe-area-inset-bottom));}
+.ni{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;cursor:pointer;padding:4px 18px;}
+.ni svg{width:17px;height:17px;stroke:var(--ink3);stroke-width:1.5;fill:none;transition:stroke .2s;}
+.ni.active svg{stroke:var(--ink);}
+.ni span{font-family:'Barlow',sans-serif;font-size:8px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);transition:color .2s;}
+.ni.active span{color:var(--ink);}
+.npip{width:3px;height:3px;background:var(--sage);opacity:0;transition:opacity .2s;}
+.ni.active .npip{opacity:1;}
+
+.pe{height:90px;}
+@media(min-width:768px){.pe{height:40px;}}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;z-index:600;background:rgba(12,12,10,.5);opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal-sheet{position:absolute;bottom:0;left:0;right:0;background:var(--paper);border-top:3px double var(--ink);padding:0 28px max(36px,env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .38s cubic-bezier(.32,.72,0,1);}
+.modal-bg.open .modal-sheet{transform:translateY(0);}
+.mgrip{width:32px;height:2px;background:var(--rule);margin:16px auto 28px;}
+.mt{font-family:'Unna',serif;font-size:26px;font-style:italic;font-weight:700;color:var(--ink);margin-bottom:6px;}
+.ms{font-family:'Old Standard TT',serif;font-size:12px;font-style:italic;color:var(--ink3);line-height:1.6;margin-bottom:22px;}
+.mi{width:100%;background:var(--paper2);border:1px solid var(--rule);padding:13px 16px;font-family:'Old Standard TT',serif;font-size:13px;color:var(--ink);outline:none;margin-bottom:10px;transition:border-color .2s;}
+.mi:focus{border-color:var(--ink);}
+.mc{width:100%;background:var(--ink);color:var(--paper);border:none;padding:14px;font-family:'Barlow',sans-serif;font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;margin-top:4px;transition:background .2s;}
+.mc:hover{background:var(--sage);}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .65s ease,transform .65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- DESKTOP SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-date">Frisco, Texas &middot; Est. 2020</div>
+    <div class="sb-title">Little Bit<br>Bakery</div>
+    <div class="sb-tagline">Homemade &middot; Fresh &middot; Local</div>
+  </div>
+  <div class="sb-drop">Porch Bakery Drop &mdash; 4/18</div>
+  <nav class="sb-nav">
+    <button class="sb-ni active" onclick="setSB(this);window.scrollTo({top:0,behavior:'smooth'})">
+      <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+      <span>Home</span><div class="sb-pip"></div>
+    </button>
+    <button class="sb-ni" onclick="setSB(this);ss('ms7')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
+      <span>Menu</span><div class="sb-pip"></div>
+    </button>
+    <button class="sb-ni" onclick="setSB(this);ss('about-sec')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span>About</span><div class="sb-pip"></div>
+    </button>
+    <button class="sb-ni" onclick="setSB(this);ss('faq-sec')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>FAQ</span><div class="sb-pip"></div>
+    </button>
+  </nav>
+  <div class="sb-notify">
+    <button class="sb-nbtn" onclick="openModal()">Notify Me</button>
+  </div>
+</aside>
+
+<!-- MOBILE HEADER -->
+<header>
+  <div class="header-top">
+    <div class="header-date">Frisco, Texas &nbsp;&middot;&nbsp; Every Saturday &nbsp;&middot;&nbsp; Est. 2020</div>
+    <div class="header-title">Little Bit Bakery</div>
+    <div class="header-tagline">Homemade &middot; Fresh &middot; Local &middot; Porch Bakery</div>
+  </div>
+  <div class="header-nav"><span class="hn-left">Porch Bakery Drop — 4/18</span><button class="hdr-nb" onclick="openModal()">Notify Me</button></div>
+</header>
+
+<div class="main-wrap">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="master-rule"></div><div class="master-rule2"></div>
+    <div class="vol-line"><span class="vol-text">Vol. 5, Issue 18</span><span class="vol-text">April 18, 2026</span></div>
+    <div class="main-headline">Porch<br>Bakery<br>4/18</div>
+    <p class="deck">Handcrafted sourdough breads, pastries, and sweet treats &mdash; baked fresh every Saturday until sold out.</p>
+    <div class="byline">By Angela &nbsp;&middot;&nbsp; Little Bit Bakery</div>
+    <div class="dcard">
+      <div class="dc-head"><div class="dc-kicker">Next Drop</div><div class="dc-tag">Sat 4/18</div></div>
+      <div class="dc-title">This Saturday&rsquo;s Drop</div>
+      <div class="dc-date">8:00 am until sold out &nbsp;&middot;&nbsp; 9639 Nightfall Drive, Frisco, TX</div>
+      <div class="cd">
+        <div class="cdu"><span class="cdn" id="d7">00</span><span class="cdl">Days</span></div>
+        <div class="cdu"><span class="cdn" id="h7">00</span><span class="cdl">Hours</span></div>
+        <div class="cdu"><span class="cdn" id="m7">00</span><span class="cdl">Mins</span></div>
+        <div class="cdu"><span class="cdn" id="s7">00</span><span class="cdl">Secs</span></div>
+      </div>
+      <button class="pbtn" onclick="ss('ms7')">Preorder This Drop</button>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<div class="section-head reveal"><div class="sh-rule"></div><div class="sh-label">This Week&rsquo;s Menu</div><div class="sh-rule"></div></div>
+<div class="sh-rule2 reveal"></div>
+<section class="msec reveal" id="ms7">
+  <div class="mh">Porch Bakery Menu</div>
+  <div class="mg-wrap"><div class="mcat">Breads</div>
+    <div class="mrow"><div><div class="mrn">Classic Sourdough</div><div class="mrno">available for preorder</div></div><div class="mrr"><span class="ptag">Pre</span><span class="mrp">$12</span><button class="abtn">+</button></div></div>
+    <div class="mrow"><div><div class="mrn">Jalape&ntilde;o Cheddar Sourdough</div><div class="mrno">available for preorder</div></div><div class="mrr"><span class="ptag">Pre</span><span class="mrp">$13</span><button class="abtn">+</button></div></div>
+    <div class="mrow"><div><div class="mrn">Double Chocolate Sourdough</div><div class="mrno">available for preorder</div></div><div class="mrr"><span class="ptag">Pre</span><span class="mrp">$13</span><button class="abtn">+</button></div></div>
+    <div class="mrow"><div><div class="mrn">Sourdough Bagels</div><div class="mrno">set of four &nbsp;&middot;&nbsp; preorder</div></div><div class="mrr"><span class="ptag">Pre</span><span class="mrp">$9</span><button class="abtn">+</button></div></div>
+  </div>
+  <div class="mg-wrap"><div class="mcat">Pastries</div>
+    <div class="mrow"><div><div class="mrn">Cinnamon Roll</div><div class="mrno">available for preorder</div></div><div class="mrr"><span class="ptag">Pre</span><span class="mrp">$5</span><button class="abtn">+</button></div></div>
+    <div class="mrow"><div><div class="mrn">Lemon Blueberry Scones</div><div class="mrno">set of two &nbsp;&middot;&nbsp; walk-up only</div></div><div class="mrr"><span class="mrp">$8</span><button class="abtn">+</button></div></div>
+  </div>
+  <div class="mg-wrap"><div class="mcat">Sweet Treats</div>
+    <div class="mrow"><div><div class="mrn">Oatmeal Cream Pie Sandwich</div><div class="mrno">available for preorder</div></div><div class="mrr"><span class="ptag">Pre</span><span class="mrp">$6</span><button class="abtn">+</button></div></div>
+    <div class="mrow"><div><div class="mrn">Biscoff Cookie Butter Cake</div><div class="mrno">slice &nbsp;&middot;&nbsp; preorder</div></div><div class="mrr"><span class="ptag">Pre</span><span class="mrp">$8</span><button class="abtn">+</button></div></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<div class="section-head reveal"><div class="sh-rule"></div><div class="sh-label">About</div><div class="sh-rule"></div></div>
+<div class="sh-rule2 reveal"></div>
+<section id="about-sec" style="padding-top:16px;">
+
+  <!-- Photo carousel -->
+  <div class="carousel-wrap reveal">
+    <div class="carousel">
+      <div class="carousel-slides" id="cslides">
+        <div class="carousel-slide">
+          <svg class="c-ph-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0C0C0A" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <div class="c-ph-lbl">Photo 1</div>
+          <div class="c-ph-sub">Angela&rsquo;s work &mdash; coming soon</div>
+        </div>
+        <div class="carousel-slide">
+          <svg class="c-ph-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0C0C0A" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <div class="c-ph-lbl">Photo 2</div>
+          <div class="c-ph-sub">Angela&rsquo;s work &mdash; coming soon</div>
+        </div>
+        <div class="carousel-slide">
+          <svg class="c-ph-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0C0C0A" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <div class="c-ph-lbl">Photo 3</div>
+          <div class="c-ph-sub">Angela&rsquo;s work &mdash; coming soon</div>
+        </div>
+        <div class="carousel-slide">
+          <svg class="c-ph-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#0C0C0A" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <div class="c-ph-lbl">Photo 4</div>
+          <div class="c-ph-sub">Angela&rsquo;s work &mdash; coming soon</div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-dots" id="cdots">
+      <button class="cdot active" onclick="goSlide(0)"></button>
+      <button class="cdot" onclick="goSlide(1)"></button>
+      <button class="cdot" onclick="goSlide(2)"></button>
+      <button class="cdot" onclick="goSlide(3)"></button>
+    </div>
+  </div>
+
+  <!-- Her actual about text -->
+  <div class="about-block reveal">
+    <div class="about-kicker">My Story</div>
+    <div class="about-name">Angela &mdash; Owner &amp; Head Baker</div>
+    <div class="about-body">
+      <p>Welcome to Little Bit Bakery! I am Angela, the owner and head baker. I am currently 20 years old and in year 5 of running this business.</p>
+      <p>When the pandemic hit in 2020, I ordered a $25 baking set from Amazon and started having fun. I always wanted to bake but never allowed myself the chance to go &ldquo;all in.&rdquo; When covid hit, it was the perfect opportunity. Being stuck at home, I was able to do what I always wanted to do&hellip; BAKE! Fast forward and here I am now! I run my bakery business out of my home and operate under the Texas Cottage Food Law.</p>
+      <p>In September 2025 I officially opened up my porch bakery in hopes of sharing more baked goods with more people around me. With social media and an amazing community, the porch bakery has grown into more than I ever dreamed of. Ultimately, God has been so good in guiding and providing the business to where it is today.</p>
+      <p>The Little Bit Porch Bakery opens on Saturdays at 8am and is stocked with breads, pastries, and treats. While the bakery is here to offer things you will enjoy, it is also here to bring community together and hopefully make peoples day a <em>little bit</em> better&nbsp;(:</p>
+    </div>
+    <div class="about-attr">Little Bit Bakery &nbsp;&middot;&nbsp; Est. 2020 &nbsp;&middot;&nbsp; Frisco, TX</div>
+  </div>
+
+  <!-- Socials -->
+  <div class="socials reveal">
+    <a class="soc-link" href="https://instagram.com/littlebitcakes" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      <span>Instagram</span>
+    </a>
+    <a class="soc-link" href="https://tiktok.com/@little.bit.bakery" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
+      <span>TikTok</span>
+    </a>
+    <a class="soc-link" href="https://facebook.com/littlebitcakes" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+      <span>Facebook</span>
+    </a>
+  </div>
+
+  <!-- Gallery coming soon -->
+  <div class="gallery-block reveal">
+    <div class="gallery-kicker">Gallery</div>
+    <div class="gallery-title">Our Work</div>
+    <div class="gallery-badge">Coming Soon</div>
+    <div class="gallery-sub">A full gallery of Angela&rsquo;s baked goods is on the way.</div>
+  </div>
+
+</section>
+
+<!-- FAQ -->
+<div class="section-head reveal" style="margin-top:28px;"><div class="sh-rule"></div><div class="sh-label">FAQ</div><div class="sh-rule"></div></div>
+<div class="sh-rule2 reveal"></div>
+<section id="faq-sec" class="reveal">
+<div class="faq-wrap">
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">How does the porch bakery work?</span><span class="faq-icon">+</span></button>
+    <div class="faq-a"><div class="faq-ai">I offer preorders (until inventory sells out) that can be picked up the day of the porch bakery and don&rsquo;t have to wait in line. If someone does not preorder, I have the bakery cart stocked for walk up purchases as well they can buy from.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">What day &amp; time is the porch bakery?</span><span class="faq-icon">+</span></button>
+    <div class="faq-a"><div class="faq-ai">The bakery cart will be open every other Saturday at 8am. On my non cart weeks I will be doing walk up purchase only for sourdough bread.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">What payment options do you have?</span><span class="faq-icon">+</span></button>
+    <div class="faq-a"><div class="faq-ai">I take cash, Venmo, and Zelle at the cart for walk up purchases!</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">How do I preorder?</span><span class="faq-icon">+</span></button>
+    <div class="faq-a"><div class="faq-ai">My preorder link can be found under the porch bakery tab. I open preorders the Sunday before a porch bakery.</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">What if I do not pickup my preorder?</span><span class="faq-icon">+</span></button>
+    <div class="faq-a"><div class="faq-ai">Because of the perishable nature of the product, if you do not pickup your preorder I will not be able to refund. Don&rsquo;t worry though I give you plenty of reminders to come pickup&nbsp;(:</div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">Do you deliver?</span><span class="faq-icon">+</span></button>
+    <div class="faq-a"><div class="faq-ai"><em>Not just yet&hellip; stay tuned. &#128064;</em></div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">Are your products allergen free?</span><span class="faq-icon">+</span></button>
+    <div class="faq-a"><div class="faq-ai">Sourdough includes wheat.<br><br>Cookies include eggs and wheat.<br><br>Cinnamon rolls include eggs, milk, wheat.<br><br>All items will be labeled with major allergens. I currently do not accommodate for allergies or dietary restrictions.</div></div>
+  </div>
+
+</div>
+</section>
+
+<div class="pe"></div>
+</div><!-- /main-wrap -->
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="ni active" onclick="setN(this);window.scrollTo({top:0,behavior:'smooth'})">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+    <span>Home</span><div class="npip"></div>
+  </button>
+  <button class="ni" onclick="setN(this);ss('about-sec')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <span>About</span><div class="npip"></div>
+  </button>
+  <button class="ni" onclick="setN(this);ss('faq-sec')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span>FAQ</span><div class="npip"></div>
+  </button>
+</nav>
+
+<!-- MODAL -->
+<div class="modal-bg" id="mo7" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet">
+    <div class="mgrip"></div>
+    <div class="mt">Never miss a drop</div>
+    <p class="ms">Get notified before Angela&rsquo;s menu sells out.</p>
+    <input class="mi" type="text" placeholder="Your name"/>
+    <input class="mi" type="tel" placeholder="Phone number"/>
+    <button class="mc" onclick="closeModal()">Notify Me</button>
+  </div>
+</div>
+
+<script>
+// Countdown
+function tick(){const n=new Date(),t=new Date(),d=(6-n.getDay()+7)%7||7;t.setDate(n.getDate()+d);t.setHours(8,0,0,0);const f=t-n;if(f<=0)return;const p=x=>String(Math.floor(x)).padStart(2,'0');document.getElementById('d7').textContent=p(f/86400000);document.getElementById('h7').textContent=p((f%86400000)/3600000);document.getElementById('m7').textContent=p((f%3600000)/60000);document.getElementById('s7').textContent=p((f%60000)/1000);}
+tick();setInterval(tick,1000);
+
+// Modal
+function openModal(){document.getElementById('mo7').classList.add('open');}
+function closeModal(){document.getElementById('mo7').classList.remove('open');}
+
+// Nav helpers
+function setN(el){document.querySelectorAll('.ni').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function setSB(el){document.querySelectorAll('.sb-ni').forEach(b=>b.classList.remove('active'));el.classList.add('active');}
+function ss(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});}
+
+// FAQ accordion
+function tFaq(btn){const item=btn.parentElement;const was=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!was)item.classList.add('open');}
+
+// Auto-rotating carousel
+let slide=0;
+const total=4;
+function goSlide(n){
+  slide=n;
+  document.getElementById('cslides').style.transform='translateX(-'+(slide*100)+'%)';
+  document.querySelectorAll('.cdot').forEach((d,i)=>d.classList.toggle('active',i===slide));
+}
+setInterval(()=>goSlide((slide+1)%total),3500);
+
+// Reveal on scroll
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

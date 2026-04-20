@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Little Bit Bakery</title>
+<link href="https://fonts.googleapis.com/css2?family=Unna:ital,wght@0,400;0,700;1,400;1,700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --paper:#F6F2E8;--paper2:#EDE8D8;--paper3:#E2DAC8;
+  --ink:#0C0C0A;--ink2:#2C2C28;--ink3:#6C6C60;
+  --sage:#4A6832;--sage2:#354C24;
+  --rule:rgba(12,12,10,.13);--rule2:rgba(12,12,10,.06);
+  --nav-h:64px;
+  --f-serif:'Unna',serif;
+  --f-std:'Old Standard TT',serif;
+  --f:'Barlow',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+html{height:100%;}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:var(--f-std);
+  overflow-x:hidden;
+  /* safe area padding so content never hides behind nav chrome */
+  padding-bottom:0;
+}
+
+/* grain */
+body::before{
+  content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:.024;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:150px;
+}
+
+/* ══════════════════════════
+   HEADER — sticky top
+══════════════════════════ */
+.site-header{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  background:var(--paper);
+  border-bottom:3px double var(--ink);
+  /* push below iOS status bar */
+  padding-top:env(safe-area-inset-top);
+}
+.hdr-top{
+  padding:10px 22px 8px;text-align:center;
+  border-bottom:1px solid var(--ink);
+}
+.hdr-eyebrow{
+  font-family:var(--f);font-size:9px;font-weight:400;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:4px;
+}
+.hdr-title{
+  font-family:var(--f-serif);font-size:22px;font-weight:700;
+  letter-spacing:.06em;color:var(--ink);
+}
+.hdr-tag{
+  font-family:var(--f-std);font-size:9px;font-style:italic;
+  color:var(--ink3);margin-top:2px;letter-spacing:.06em;
+}
+.hdr-sub{
+  padding:6px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.hdr-drop{
+  font-family:var(--f);font-size:9px;font-weight:400;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);
+}
+.hdr-notify{
+  background:var(--ink);color:var(--paper);border:none;
+  padding:5px 14px;font-family:var(--f);font-size:9px;
+  font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  cursor:pointer;transition:background .2s;
+}
+.hdr-notify:hover{background:var(--sage);}
+
+/* header height calc for content offset */
+.hdr-spacer{
+  height:calc(var(--hdr-h, 94px) + env(safe-area-inset-top));
+}
+
+/* ══════════════════════════
+   BOTTOM NAV
+══════════════════════════ */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:500;
+  background:var(--paper);
+  border-top:3px double var(--ink);
+  display:flex;justify-content:space-around;
+  /* safe area for home indicator */
+  padding:8px 0 max(10px,env(safe-area-inset-bottom));
+}
+.bn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:none;border:none;cursor:pointer;padding:4px 16px;
+  color:var(--ink3);transition:color .18s;
+}
+.bn svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.5;fill:none;}
+.bn span{
+  font-family:var(--f);font-size:8px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;
+}
+.bn.active{color:var(--ink);}
+.bn-pip{
+  width:3px;height:3px;background:var(--sage);
+  border-radius:50%;opacity:0;transition:opacity .18s;
+}
+.bn.active .bn-pip{opacity:1;}
+
+/* nav-safe bottom padding for scrollable content */
+.nav-pad{height:calc(var(--nav-h) + max(10px,env(safe-area-inset-bottom)) + 16px);}
+
+/* ══════════════════════════
+   PAGES
+══════════════════════════ */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ══════════════════════════
+   HOME PAGE
+══════════════════════════ */
+.home-inner{padding:22px 22px 0;}
+
+/* Masthead rules */
+.rule-thick{height:4px;background:var(--ink);margin-bottom:3px;}
+.rule-thin{height:1px;background:var(--ink);margin-bottom:18px;}
+.vol-row{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px;
+}
+.vol-text{
+  font-family:var(--f);font-size:9px;font-weight:400;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);
+}
+.headline{
+  font-family:var(--f-serif);
+  font-size:clamp(48px,13vw,68px);
+  font-weight:700;line-height:.88;
+  color:var(--ink);margin-bottom:10px;letter-spacing:-.01em;
+}
+@media(min-width:768px){
+  .headline{font-size:clamp(64px,8vw,96px);}
+}
+.deck{
+  font-family:var(--f-std);font-size:14px;font-style:italic;
+  color:var(--ink2);line-height:1.65;
+  margin-bottom:16px;padding-bottom:16px;
+  border-bottom:1px solid var(--rule);
+}
+@media(min-width:768px){.deck{font-size:16px;}}
+.byline{
+  font-family:var(--f);font-size:10px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--sage);margin-bottom:22px;
+}
+
+/* Drop countdown card */
+.drop-card{
+  border:1px solid var(--ink);
+  padding:18px 18px 16px;
+  position:relative;margin-bottom:22px;
+}
+.drop-card::before,.drop-card::after{
+  content:'';position:absolute;
+  width:8px;height:8px;
+  border-color:var(--sage);border-style:solid;
+}
+.drop-card::before{top:4px;left:4px;border-width:1px 0 0 1px;}
+.drop-card::after{bottom:4px;right:4px;border-width:0 1px 1px 0;}
+.dc-header{
+  border-bottom:1px solid var(--rule);
+  padding-bottom:10px;margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.dc-kicker{
+  font-family:var(--f);font-size:9px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--sage);
+}
+.dc-tag{
+  font-family:var(--f);font-size:9px;
+  letter-spacing:.1em;color:var(--ink3);
+}
+.dc-title{
+  font-family:var(--f-serif);font-size:20px;
+  font-weight:700;color:var(--ink);margin-bottom:3px;
+}
+@media(min-width:768px){.dc-title{font-size:24px;}}
+.dc-date{
+  font-family:var(--f-std);font-size:11px;font-style:italic;
+  color:var(--ink3);margin-bottom:14px;
+}
+@media(min-width:768px){.dc-date{font-size:13px;}}
+
+/* Countdown digits */
+.countdown{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--rule);margin-bottom:14px;
+}
+.cdu{padding:10px 4px;text-align:center;border-right:1px solid var(--rule);}
+.cdu:last-child{border-right:none;}
+.cdu-n{
+  display:block;font-family:var(--f-serif);
+  font-size:28px;font-weight:700;color:var(--ink);line-height:1;
+}
+@media(min-width:768px){.cdu-n{font-size:36px;}}
+.cdu-l{
+  display:block;font-family:var(--f);font-size:8px;
+  font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink3);margin-top:4px;
+}
+.preorder-btn{
+  width:100%;background:var(--ink);color:var(--paper);
+  border:none;padding:14px;
+  font-family:var(--f);font-size:10px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  cursor:pointer;transition:background .2s,transform .1s;
+}
+.preorder-btn:hover{background:var(--sage);}
+.preorder-btn:active{transform:scale(.98);}
+
+/* Menu section */
+.section-divider{
+  display:flex;align-items:center;gap:0;
+  padding:24px 22px 0;
+}
+.sd-rule{flex:1;height:1px;background:var(--ink);}
+.sd-label{
+  font-family:var(--f);font-size:9px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink);padding:0 12px;background:var(--paper);
+}
+.sd-rule-thick{height:3px;background:var(--ink);margin:4px 22px 0;}
+
+.menu-section{padding:16px 22px 32px;}
+.menu-title{
+  font-family:var(--f-serif);font-size:28px;font-weight:700;
+  font-style:italic;color:var(--ink);margin-bottom:20px;
+}
+@media(min-width:768px){.menu-title{font-size:34px;}}
+.menu-cat{
+  font-family:var(--f);font-size:9px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--ink);
+  border-top:2px solid var(--ink);border-bottom:1px solid var(--rule);
+  padding:6px 0;margin-bottom:2px;
+}
+.menu-group{margin-bottom:24px;}
+.menu-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 0;border-bottom:1px solid var(--rule2);
+  gap:10px;cursor:pointer;transition:padding-left .18s;
+}
+.menu-row:hover{padding-left:6px;}
+.menu-row:last-child{border-bottom:none;}
+.mr-name{
+  font-family:var(--f-serif);font-size:18px;font-style:italic;
+  color:var(--ink);margin-bottom:2px;
+}
+@media(min-width:768px){.mr-name{font-size:20px;}}
+.mr-note{
+  font-family:var(--f-std);font-size:11px;color:var(--ink3);
+}
+@media(min-width:768px){.mr-note{font-size:12px;}}
+.mr-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.mr-tag{
+  font-family:var(--f);font-size:8px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--sage);border:1px solid rgba(74,104,50,.35);padding:2px 7px;
+}
+.mr-price{
+  font-family:var(--f-serif);font-size:18px;
+  font-weight:700;color:var(--ink2);
+}
+@media(min-width:768px){.mr-price{font-size:20px;}}
+.mr-add{
+  width:28px;height:28px;border:1px solid var(--rule);
+  background:none;color:var(--sage);font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.mr-add:hover{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+
+/* Carousel */
+.carousel-wrap{padding:0 22px 28px;}
+.carousel{
+  position:relative;width:100%;
+  background:var(--paper2);border:1px solid var(--rule);
+  overflow:hidden;
+}
+/* constrain height on desktop */
+.carousel-inner{
+  display:flex;transition:transform .55s ease;
+}
+.c-slide{
+  min-width:100%;
+  aspect-ratio:16/9;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:8px;background:var(--paper2);
+}
+@media(min-width:768px){
+  .carousel{max-width:600px;margin:0 auto;}
+}
+.c-ph-icon{opacity:.2;}
+.c-ph-lbl{
+  font-family:var(--f);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink3);
+}
+.c-ph-sub{
+  font-family:var(--f-std);font-size:11px;
+  font-style:italic;color:var(--ink3);
+}
+.carousel-dots{
+  display:flex;justify-content:center;gap:7px;
+  padding:10px 0 4px;
+}
+.cdot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--rule);border:none;padding:0;
+  cursor:pointer;transition:background .2s;
+}
+.cdot.active{background:var(--sage);}
+
+/* ══════════════════════════
+   ABOUT PAGE
+══════════════════════════ */
+.page-inner{padding:22px;}
+.page-kicker{
+  font-family:var(--f);font-size:9px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;
+  color:var(--sage);margin-bottom:10px;
+}
+.page-title{
+  font-family:var(--f-serif);font-size:28px;font-weight:700;
+  color:var(--ink);margin-bottom:20px;
+}
+@media(min-width:768px){.page-title{font-size:36px;}}
+
+.about-card{
+  border:1px solid var(--ink);padding:22px;
+  position:relative;margin-bottom:16px;
+}
+.about-card::before,.about-card::after{
+  content:'';position:absolute;width:8px;height:8px;
+  border-color:var(--sage);border-style:solid;
+}
+.about-card::before{top:4px;left:4px;border-width:1px 0 0 1px;}
+.about-card::after{bottom:4px;right:4px;border-width:0 1px 1px 0;}
+.about-name{
+  font-family:var(--f-serif);font-size:20px;
+  font-weight:700;color:var(--ink);margin-bottom:16px;
+}
+@media(min-width:768px){.about-name{font-size:24px;}}
+.about-body{
+  font-family:var(--f-std);font-size:14px;
+  line-height:1.8;color:var(--ink2);
+}
+@media(min-width:768px){.about-body{font-size:15px;}}
+.about-body p{margin-bottom:14px;}
+.about-body p:last-child{margin-bottom:0;}
+.about-body em{font-style:italic;}
+.about-attr{
+  font-family:var(--f);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink3);
+  padding-top:14px;margin-top:14px;border-top:1px solid var(--rule);
+}
+
+/* Socials */
+.socials{
+  display:flex;border:1px solid var(--rule);margin-bottom:2px;
+}
+.soc-link{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:14px 6px;border-right:1px solid var(--rule);
+  text-decoration:none;transition:background .18s;
+}
+.soc-link:last-child{border-right:none;}
+.soc-link:hover{background:var(--paper2);}
+.soc-link svg{
+  width:14px;height:14px;stroke:var(--ink3);
+  stroke-width:1.5;fill:none;flex-shrink:0;
+}
+.soc-link span{
+  font-family:var(--f);font-size:9px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);
+}
+@media(min-width:768px){
+  .soc-link span{font-size:11px;}
+}
+
+/* ══════════════════════════
+   GALLERY PAGE
+══════════════════════════ */
+.gallery-coming{
+  border:1px solid var(--rule);padding:48px 24px;
+  text-align:center;margin-bottom:12px;
+}
+.gc-badge{
+  display:inline-block;
+  font-family:var(--f);font-size:9px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--sage);border:1px solid rgba(74,104,50,.35);
+  padding:5px 14px;margin-bottom:14px;
+}
+.gc-title{
+  font-family:var(--f-serif);font-size:24px;font-weight:700;
+  font-style:italic;color:var(--ink);margin-bottom:10px;
+}
+@media(min-width:768px){.gc-title{font-size:30px;}}
+.gc-sub{
+  font-family:var(--f-std);font-size:13px;
+  font-style:italic;color:var(--ink3);line-height:1.65;
+}
+@media(min-width:768px){.gc-sub{font-size:15px;}}
+
+/* ══════════════════════════
+   FAQ PAGE
+══════════════════════════ */
+.faq-item{border-top:1px solid var(--rule);}
+.faq-item:last-child{border-bottom:1px solid var(--rule);}
+.faq-q{
+  width:100%;display:flex;align-items:center;
+  justify-content:space-between;padding:16px 0;
+  background:none;border:none;cursor:pointer;
+  text-align:left;gap:14px;
+}
+.faq-qt{
+  font-family:var(--f-std);font-size:14px;font-weight:700;
+  color:var(--ink);line-height:1.4;
+}
+@media(min-width:768px){.faq-qt{font-size:16px;}}
+.faq-icon{
+  font-family:var(--f);font-size:20px;
+  color:var(--ink3);flex-shrink:0;line-height:1;
+  transition:transform .25s;
+}
+.faq-item.open .faq-icon{transform:rotate(45deg);color:var(--sage);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.faq-item.open .faq-a{max-height:500px;}
+.faq-ai{
+  font-family:var(--f-std);font-size:13px;
+  color:var(--ink2);line-height:1.8;padding-bottom:18px;
+}
+@media(min-width:768px){.faq-ai{font-size:15px;}}
+.faq-ai em{font-style:italic;color:var(--sage);}
+
+/* ══════════════════════════
+   MODAL
+══════════════════════════ */
+.modal-bg{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(12,12,10,.5);
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.modal-bg.open{opacity:1;pointer-events:all;}
+.modal-sheet{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--paper);
+  border-top:3px double var(--ink);
+  padding:0 28px max(36px,env(safe-area-inset-bottom));
+  transform:translateY(100%);
+  transition:transform .38s cubic-bezier(.32,.72,0,1);
+}
+.modal-bg.open .modal-sheet{transform:translateY(0);}
+.mgrip{width:32px;height:2px;background:var(--rule);margin:16px auto 28px;}
+.modal-title{
+  font-family:var(--f-serif);font-size:26px;font-style:italic;
+  font-weight:700;color:var(--ink);margin-bottom:6px;
+}
+.modal-sub{
+  font-family:var(--f-std);font-size:13px;font-style:italic;
+  color:var(--ink3);line-height:1.6;margin-bottom:22px;
+}
+.modal-inp{
+  width:100%;background:var(--paper2);border:1px solid var(--rule);
+  padding:13px 16px;font-family:var(--f-std);font-size:14px;
+  color:var(--ink);outline:none;margin-bottom:10px;
+  transition:border-color .2s;
+}
+.modal-inp:focus{border-color:var(--ink);}
+.modal-btn{
+  width:100%;background:var(--ink);color:var(--paper);border:none;
+  padding:14px;font-family:var(--f);font-size:10px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;cursor:pointer;
+  margin-top:4px;transition:background .2s;
+}
+.modal-btn:hover{background:var(--sage);}
+
+/* ══════════════════════════
+   REVEAL ANIMATION
+══════════════════════════ */
+.reveal{
+  opacity:0;transform:translateY(14px);
+  transition:opacity .6s ease,transform .6s ease;
+}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ══════════════════════════
+   DESKTOP OVERRIDES
+══════════════════════════ */
+@media(min-width:768px){
+  /* Constrain content width */
+  .home-inner,.menu-section,.page-inner{max-width:680px;margin:0 auto;}
+  .section-divider{padding-left:calc(50% - 340px);padding-right:calc(50% - 340px);}
+  .sd-rule-thick{margin-left:calc(50% - 340px);margin-right:calc(50% - 340px);}
+  .carousel-wrap{max-width:680px;margin:0 auto;padding:0 22px 28px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header" id="site-header">
+  <div class="hdr-top">
+    <div class="hdr-eyebrow">Frisco, Texas &nbsp;&middot;&nbsp; Every Saturday &nbsp;&middot;&nbsp; Est. 2020</div>
+    <div class="hdr-title">Little Bit Bakery</div>
+    <div class="hdr-tag">Homemade &middot; Fresh &middot; Local &middot; Porch Bakery</div>
+  </div>
+  <div class="hdr-sub">
+    <span class="hdr-drop">Porch Bakery Drop &mdash; 4/25</span>
+    <button class="hdr-notify" onclick="openModal()">Notify Me</button>
+  </div>
+</header>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bn active" id="bn-home" onclick="showPage('home',this)">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+    <span>Home</span><div class="bn-pip"></div>
+  </button>
+  <button class="bn" id="bn-about" onclick="showPage('about',this)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <span>About</span><div class="bn-pip"></div>
+  </button>
+  <button class="bn" id="bn-gallery" onclick="showPage('gallery',this)">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+    <span>Gallery</span><div class="bn-pip"></div>
+  </button>
+  <button class="bn" id="bn-faq" onclick="showPage('faq',this)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span>FAQ</span><div class="bn-pip"></div>
+  </button>
+</nav>
+
+<!-- ══ HOME PAGE ══ -->
+<div class="page active" id="page-home">
+  <div class="hdr-spacer"></div>
+  <div class="home-inner">
+    <div class="rule-thick"></div>
+    <div class="rule-thin"></div>
+    <div class="vol-row">
+      <span class="vol-text">Vol. 5, Issue 25</span>
+      <span class="vol-text">April 25, 2026</span>
+    </div>
+    <div class="headline">Porch<br>Bakery<br>4/25</div>
+    <p class="deck">Handcrafted sourdough breads, pastries, and sweet treats &mdash; baked fresh every Saturday until sold out.</p>
+    <div class="byline">By Angela &nbsp;&middot;&nbsp; Little Bit Bakery</div>
+    <div class="drop-card">
+      <div class="dc-header">
+        <div class="dc-kicker">Next Drop</div>
+        <div class="dc-tag">Sat 4/25</div>
+      </div>
+      <div class="dc-title">This Saturday&rsquo;s Drop</div>
+      <div class="dc-date">8:00 am until sold out &nbsp;&middot;&nbsp; 9639 Nightfall Drive, Frisco, TX</div>
+      <div class="countdown">
+        <div class="cdu"><span class="cdu-n" id="cd-d">00</span><span class="cdu-l">Days</span></div>
+        <div class="cdu"><span class="cdu-n" id="cd-h">00</span><span class="cdu-l">Hours</span></div>
+        <div class="cdu"><span class="cdu-n" id="cd-m">00</span><span class="cdu-l">Mins</span></div>
+        <div class="cdu"><span class="cdu-n" id="cd-s">00</span><span class="cdu-l">Secs</span></div>
+      </div>
+      <button class="preorder-btn" onclick="showPage('home',document.getElementById('bn-home'));document.getElementById('menu-anchor').scrollIntoView({behavior:'smooth'})">
+        View This Week&rsquo;s Menu
+      </button>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <div class="section-divider reveal">
+    <div class="sd-rule"></div>
+    <div class="sd-label">This Week&rsquo;s Menu</div>
+    <div class="sd-rule"></div>
+  </div>
+  <div class="sd-rule-thick reveal"></div>
+  <div id="menu-anchor"></div>
+  <div class="menu-section reveal">
+    <div class="menu-title">Porch Bakery Menu</div>
+    <div class="menu-group">
+      <div class="menu-cat">Breads</div>
+      <div class="menu-row">
+        <div><div class="mr-name">Maple Pecan Sourdough</div><div class="mr-note">available for preorder</div></div>
+        <div class="mr-right"><span class="mr-tag">Pre</span><span class="mr-price">$14</span><button class="mr-add">+</button></div>
+      </div>
+      <div class="menu-row">
+        <div><div class="mr-name">Everything Bagel Sourdough</div><div class="mr-note">available for preorder</div></div>
+        <div class="mr-right"><span class="mr-tag">Pre</span><span class="mr-price">$13</span><button class="mr-add">+</button></div>
+      </div>
+      <div class="menu-row">
+        <div><div class="mr-name">Classic Sourdough Loaf</div><div class="mr-note">available for preorder</div></div>
+        <div class="mr-right"><span class="mr-tag">Pre</span><span class="mr-price">$12</span><button class="mr-add">+</button></div>
+      </div>
+    </div>
+    <div class="menu-group">
+      <div class="menu-cat">Pastries &amp; Sweets</div>
+      <div class="menu-row">
+        <div><div class="mr-name">Cinnamon Rolls (3 Pack)</div><div class="mr-note">available for preorder</div></div>
+        <div class="mr-right"><span class="mr-tag">Pre</span><span class="mr-price">$15</span><button class="mr-add">+</button></div>
+      </div>
+      <div class="menu-row">
+        <div><div class="mr-name">Oatmeal Cream Pies (x2)</div><div class="mr-note">available for preorder</div></div>
+        <div class="mr-right"><span class="mr-tag">Pre</span><span class="mr-price">$12</span><button class="mr-add">+</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carousel -->
+  <div class="carousel-wrap reveal">
+    <div class="carousel">
+      <div class="carousel-inner" id="c-inner">
+        <div class="c-slide">
+          <svg class="c-ph-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0C0C0A" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <div class="c-ph-lbl">Photo Coming Soon</div>
+          <div class="c-ph-sub">Angela&rsquo;s baked goods</div>
+        </div>
+        <div class="c-slide">
+          <svg class="c-ph-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0C0C0A" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <div class="c-ph-lbl">Photo Coming Soon</div>
+          <div class="c-ph-sub">Angela&rsquo;s baked goods</div>
+        </div>
+        <div class="c-slide">
+          <svg class="c-ph-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#0C0C0A" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          <div class="c-ph-lbl">Photo Coming Soon</div>
+          <div class="c-ph-sub">Angela&rsquo;s baked goods</div>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-dots" id="c-dots">
+      <button class="cdot active" onclick="goSlide(0)"></button>
+      <button class="cdot" onclick="goSlide(1)"></button>
+      <button class="cdot" onclick="goSlide(2)"></button>
+    </div>
+  </div>
+
+  <!-- Socials teaser -->
+  <div class="socials reveal" style="margin:0 22px 8px;">
+    <a class="soc-link" href="https://instagram.com/littlebitcakes" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      <span>Instagram</span>
+    </a>
+    <a class="soc-link" href="https://tiktok.com/@little.bit.bakery" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
+      <span>TikTok</span>
+    </a>
+    <a class="soc-link" href="https://facebook.com/littlebitcakes" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+      <span>Facebook</span>
+    </a>
+  </div>
+
+  <div class="nav-pad"></div>
+</div>
+
+<!-- ══ ABOUT PAGE ══ -->
+<div class="page" id="page-about">
+  <div class="hdr-spacer"></div>
+  <div class="page-inner">
+    <div class="page-kicker">Our Story</div>
+    <div class="page-title">About Little Bit Bakery</div>
+    <div class="about-card">
+      <div class="about-name">Angela &mdash; Owner &amp; Head Baker</div>
+      <div class="about-body">
+        <p>Welcome to Little Bit Bakery! I am Angela, the owner and head baker. I am currently 20 years old and in year 5 of running this business.</p>
+        <p>When the pandemic hit in 2020, I ordered a $25 baking set from Amazon and started having fun. I always wanted to bake but never allowed myself the chance to go &ldquo;all in.&rdquo; When covid hit, it was the perfect opportunity. Being stuck at home, I was able to do what I always wanted to do&hellip; BAKE! Fast forward and here I am now! I run my bakery business out of my home and operate under the Texas Cottage Food Law.</p>
+        <p>In September 2025 I officially opened up my porch bakery in hopes of sharing more baked goods with more people around me. With social media and an amazing community, the porch bakery has grown into more than I ever dreamed of. Ultimately, God has been so good in guiding and providing the business to where it is today.</p>
+        <p>The Little Bit Porch Bakery opens on Saturdays at 8am and is stocked with breads, pastries, and treats. While the bakery is here to offer things you will enjoy, it is also here to bring community together and hopefully make peoples day a <em>little bit</em> better&nbsp;(:</p>
+      </div>
+      <div class="about-attr">Little Bit Bakery &nbsp;&middot;&nbsp; Est. 2020 &nbsp;&middot;&nbsp; Frisco, TX</div>
+    </div>
+    <div class="socials" style="margin-bottom:8px;">
+      <a class="soc-link" href="https://instagram.com/littlebitcakes" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        <span>Instagram</span>
+      </a>
+      <a class="soc-link" href="https://tiktok.com/@little.bit.bakery" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
+        <span>TikTok</span>
+      </a>
+      <a class="soc-link" href="https://facebook.com/littlebitcakes" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+        <span>Facebook</span>
+      </a>
+    </div>
+  </div>
+  <div class="nav-pad"></div>
+</div>
+
+<!-- ══ GALLERY PAGE ══ -->
+<div class="page" id="page-gallery">
+  <div class="hdr-spacer"></div>
+  <div class="page-inner">
+    <div class="page-kicker">Gallery</div>
+    <div class="page-title">Our Work</div>
+    <div class="gallery-coming">
+      <div class="gc-badge">Coming Soon</div>
+      <div class="gc-title">A look inside the bakery</div>
+      <div class="gc-sub">Angela&rsquo;s full gallery of baked goods, porch drops, and behind-the-scenes moments is on the way. Follow along on Instagram in the meantime.</div>
+    </div>
+    <div class="socials">
+      <a class="soc-link" href="https://instagram.com/littlebitcakes" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        <span>@littlebitcakes</span>
+      </a>
+      <a class="soc-link" href="https://tiktok.com/@little.bit.bakery" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/></svg>
+        <span>@little.bit.bakery</span>
+      </a>
+    </div>
+  </div>
+  <div class="nav-pad"></div>
+</div>
+
+<!-- ══ FAQ PAGE ══ -->
+<div class="page" id="page-faq">
+  <div class="hdr-spacer"></div>
+  <div class="page-inner">
+    <div class="page-kicker">Questions</div>
+    <div class="page-title">FAQ</div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">How does the porch bakery work?</span><span class="faq-icon">+</span></button>
+      <div class="faq-a"><div class="faq-ai">I offer preorders (until inventory sells out) that can be picked up the day of the porch bakery and don&rsquo;t have to wait in line. If someone does not preorder, I have the bakery cart stocked for walk up purchases as well they can buy from.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">What day &amp; time is the porch bakery?</span><span class="faq-icon">+</span></button>
+      <div class="faq-a"><div class="faq-ai">The bakery cart will be open every other Saturday at 8am. On my non cart weeks I will be doing walk up purchase only for sourdough bread.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">What payment options do you have?</span><span class="faq-icon">+</span></button>
+      <div class="faq-a"><div class="faq-ai">I take cash, Venmo, and Zelle at the cart for walk up purchases!</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">How do I preorder?</span><span class="faq-icon">+</span></button>
+      <div class="faq-a"><div class="faq-ai">My preorder link can be found under the porch bakery tab. I open preorders the Sunday before a porch bakery.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">What if I do not pickup my preorder?</span><span class="faq-icon">+</span></button>
+      <div class="faq-a"><div class="faq-ai">Because of the perishable nature of the product, if you do not pickup your preorder I will not be able to refund. Don&rsquo;t worry though I give you plenty of reminders to come pickup&nbsp;(:</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">Do you deliver?</span><span class="faq-icon">+</span></button>
+      <div class="faq-a"><div class="faq-ai"><em>Not just yet&hellip; stay tuned. &#128064;</em></div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="tFaq(this)"><span class="faq-qt">Are your products allergen free?</span><span class="faq-icon">+</span></button>
+      <div class="faq-a"><div class="faq-ai">
+        Sourdough includes wheat.<br><br>
+        Cookies include eggs and wheat.<br><br>
+        Cinnamon rolls include eggs, milk, wheat.<br><br>
+        All items will be labeled with major allergens. I currently do not accommodate for allergies or dietary restrictions.
+      </div></div>
+    </div>
+
+  </div>
+  <div class="nav-pad"></div>
+</div>
+
+<!-- NOTIFY MODAL -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-sheet">
+    <div class="mgrip"></div>
+    <div class="modal-title">Never miss a drop</div>
+    <p class="modal-sub">Get notified before Angela&rsquo;s menu sells out.</p>
+    <input class="modal-inp" type="text" placeholder="Your name"/>
+    <input class="modal-inp" type="tel" placeholder="Phone number"/>
+    <button class="modal-btn" onclick="closeModal()">Notify Me</button>
+  </div>
+</div>
+
+<script>
+// ── HEADER HEIGHT → offset pages ──
+function setHeaderHeight(){
+  const h=document.getElementById('site-header').offsetHeight;
+  document.querySelectorAll('.hdr-spacer').forEach(el=>el.style.height=h+'px');
+}
+setHeaderHeight();
+window.addEventListener('resize',setHeaderHeight);
+
+// ── PAGE NAVIGATION ──
+function showPage(page, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.bn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  // scroll to top of new page
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+// ── COUNTDOWN to next Saturday 8am ──
+function tick(){
+  const now=new Date();
+  const target=new Date();
+  // Find next Saturday
+  const daysUntilSat=(6-now.getDay()+7)%7||7;
+  target.setDate(now.getDate()+daysUntilSat);
+  target.setHours(8,0,0,0);
+  const diff=target-now;
+  if(diff<=0)return;
+  const pad=x=>String(Math.floor(x)).padStart(2,'0');
+  document.getElementById('cd-d').textContent=pad(diff/86400000);
+  document.getElementById('cd-h').textContent=pad((diff%86400000)/3600000);
+  document.getElementById('cd-m').textContent=pad((diff%3600000)/60000);
+  document.getElementById('cd-s').textContent=pad((diff%60000)/1000);
+}
+tick();setInterval(tick,1000);
+
+// ── MODAL ──
+function openModal(){document.getElementById('modal').classList.add('open');}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+// ── FAQ ──
+function tFaq(btn){
+  const item=btn.parentElement;
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen) item.classList.add('open');
+}
+
+// ── CAROUSEL ──
+let slide=0;
+const totalSlides=3;
+function goSlide(n){
+  slide=n;
+  document.getElementById('c-inner').style.transform='translateX(-'+(slide*100)+'%)';
+  document.querySelectorAll('.cdot').forEach((d,i)=>d.classList.toggle('active',i===slide));
+}
+setInterval(()=>goSlide((slide+1)%totalSlides),3800);
+
+// ── REVEAL ON SCROLL ──
+const obs=new IntersectionObserver(
+  e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible');}),
+  {threshold:.08}
+);
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

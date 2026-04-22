@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjZGMkU4Ii8+CiAgPHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSJub25lIiBzdHJva2U9IiMwQzBDMEEiIHN0cm9rZS13aWR0aD0iMyIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI1NCIgaGVpZ2h0PSI1NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMEMwQzBBIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cGF0aCBkPSJNMiwyIEwxMiwyIE0yLDIgTDIsMTIiIHN0cm9rZT0iIzRBNjgzMiIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CiAgPHBhdGggZD0iTTYyLDYyIEw1Miw2MiBNNjIsNjIgTDYyLDUyIiBzdHJva2U9IiM0QTY4MzIiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgogIDx0ZXh0IHg9IjMyIiB5PSI0NCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwQzBDMEEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSItMSI+TEI8L3RleHQ+Cjwvc3ZnPg=="/>
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjZGMkU4Ii8+CiAgPHJlY3QgeD0iMiIgeT0iMiIgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiBmaWxsPSJub25lIiBzdHJva2U9IiMwQzBDMEEiIHN0cm9rZS13aWR0aD0iMyIvPgogIDxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI1NCIgaGVpZ2h0PSI1NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMEMwQzBBIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8cGF0aCBkPSJNMiwyIEwxMiwyIE0yLDIgTDIsMTIiIHN0cm9rZT0iIzRBNjgzMiIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CiAgPHBhdGggZD0iTTYyLDYyIEw1Miw2MiBNNjIsNjIgTDYyLDUyIiBzdHJva2U9IiM0QTY4MzIiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgogIDx0ZXh0IHg9IjMyIiB5PSI0NCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMzAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMwQzBDMEEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSItMSI+TEI8L3RleHQ+Cjwvc3ZnPg=="/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Little Bit Bakery</title>
 <link href="https://fonts.googleapis.com/css2?family=Unna:ital,wght@0,400;0,700;1,400;1,700&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -10,6 +12,7 @@
   --paper:#F6F2E8;--paper2:#EDE8D8;--paper3:#E2DAC8;
   --ink:#0C0C0A;--ink2:#2C2C28;--ink3:#6C6C60;
   --sage:#4A6832;--sage2:#354C24;
+  --mint:#C2DBB7;--mint2:#AECFA2;--mint-ink:#1E3516;
   --rule:rgba(12,12,10,.13);--rule2:rgba(12,12,10,.06);
   --nav-h:64px;
   --f-serif:'Unna',serif;
@@ -38,31 +41,31 @@ body::before{
 ══════════════════════════ */
 .site-header{
   position:fixed;top:0;left:0;right:0;z-index:500;
-  background:var(--paper);
-  border-bottom:3px double var(--ink);
-  /* push below iOS status bar */
+  background:var(--mint);
+  border-bottom:1px solid rgba(12,12,10,.15);
   padding-top:env(safe-area-inset-top);
 }
 .hdr-top{
   padding:10px 22px 8px;text-align:center;
-  border-bottom:1px solid var(--ink);
 }
 .hdr-eyebrow{
   font-family:var(--f);font-size:9px;font-weight:400;
   letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ink3);margin-bottom:4px;
+  color:var(--mint-ink);opacity:.6;margin-bottom:4px;
 }
 .hdr-title{
   font-family:var(--f-serif);font-size:22px;font-weight:700;
-  letter-spacing:.06em;color:var(--ink);
+  letter-spacing:.06em;color:var(--mint-ink);
 }
 .hdr-tag{
   font-family:var(--f-std);font-size:9px;font-style:italic;
-  color:var(--ink3);margin-top:2px;letter-spacing:.06em;
+  color:var(--mint-ink);opacity:.55;margin-top:2px;letter-spacing:.06em;
 }
 .hdr-sub{
   padding:6px 22px;
   display:flex;align-items:center;justify-content:space-between;
+  background:var(--paper);
+  border-top:1px solid rgba(12,12,10,.12);
 }
 .hdr-drop{
   font-family:var(--f);font-size:9px;font-weight:400;
@@ -87,9 +90,8 @@ body::before{
 .bottom-nav{
   position:fixed;bottom:0;left:0;right:0;z-index:500;
   background:var(--paper);
-  border-top:3px double var(--ink);
+  border-top:1px solid rgba(12,12,10,.15);
   display:flex;justify-content:space-around;
-  /* safe area for home indicator */
   padding:8px 0 max(10px,env(safe-area-inset-bottom));
 }
 .bn{
@@ -102,9 +104,9 @@ body::before{
   font-family:var(--f);font-size:8px;font-weight:500;
   letter-spacing:.12em;text-transform:uppercase;
 }
-.bn.active{color:var(--ink);}
+.bn.active{color:var(--sage);}
 .bn-pip{
-  width:3px;height:3px;background:var(--sage);
+  width:3px;height:3px;background:var(--mint2);
   border-radius:50%;opacity:0;transition:opacity .18s;
 }
 .bn.active .bn-pip{opacity:1;}
@@ -159,6 +161,7 @@ body::before{
 /* Drop countdown card */
 .drop-card{
   border:1px solid var(--ink);
+  background:var(--paper);
   padding:18px 18px 16px;
   position:relative;margin-bottom:22px;
 }
@@ -198,17 +201,17 @@ body::before{
   display:grid;grid-template-columns:repeat(4,1fr);
   border:1px solid var(--rule);margin-bottom:14px;
 }
-.cdu{padding:10px 4px;text-align:center;border-right:1px solid var(--rule);}
+.cdu{padding:8px 4px;text-align:center;border-right:1px solid var(--rule);}
 .cdu:last-child{border-right:none;}
 .cdu-n{
   display:block;font-family:var(--f-serif);
-  font-size:28px;font-weight:700;color:var(--ink);line-height:1;
+  font-size:22px;font-weight:700;color:var(--ink);line-height:1;
 }
-@media(min-width:768px){.cdu-n{font-size:36px;}}
+@media(min-width:768px){.cdu-n{font-size:28px;}}
 .cdu-l{
   display:block;font-family:var(--f);font-size:8px;
   font-weight:500;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ink3);margin-top:4px;
+  color:var(--ink3);margin-top:3px;
 }
 .preorder-btn{
   width:100%;background:var(--ink);color:var(--paper);
@@ -241,9 +244,10 @@ body::before{
 @media(min-width:768px){.menu-title{font-size:34px;}}
 .menu-cat{
   font-family:var(--f);font-size:9px;font-weight:500;
-  letter-spacing:.22em;text-transform:uppercase;color:var(--ink);
-  border-top:2px solid var(--ink);border-bottom:1px solid var(--rule);
-  padding:6px 0;margin-bottom:2px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--mint-ink);
+  background:var(--mint);
+  border-top:1px solid rgba(30,53,22,.2);border-bottom:1px solid rgba(30,53,22,.1);
+  padding:6px 8px;margin-bottom:2px;
 }
 .menu-group{margin-bottom:24px;}
 .menu-row{
@@ -266,7 +270,7 @@ body::before{
 .mr-tag{
   font-family:var(--f);font-size:8px;font-weight:500;
   letter-spacing:.1em;text-transform:uppercase;
-  color:var(--sage);border:1px solid rgba(74,104,50,.35);padding:2px 7px;
+  color:var(--sage);background:var(--mint);border:1px solid var(--mint2);padding:2px 7px;
 }
 .mr-price{
   font-family:var(--f-serif);font-size:18px;
@@ -274,12 +278,12 @@ body::before{
 }
 @media(min-width:768px){.mr-price{font-size:20px;}}
 .mr-add{
-  width:28px;height:28px;border:1px solid var(--rule);
-  background:none;color:var(--sage);font-size:18px;
+  width:28px;height:28px;border:1px solid var(--mint2);
+  background:var(--mint);color:var(--sage);font-size:18px;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;transition:all .15s;flex-shrink:0;
 }
-.mr-add:hover{background:var(--ink);border-color:var(--ink);color:var(--paper);}
+.mr-add:hover{background:var(--mint-ink);border-color:var(--mint-ink);color:var(--mint);}
 
 /* Carousel */
 .carousel-wrap{padding:0 22px 28px;}
@@ -456,7 +460,7 @@ body::before{
 .modal-sheet{
   position:absolute;bottom:0;left:0;right:0;
   background:var(--paper);
-  border-top:3px double var(--ink);
+  border-top:2px solid var(--mint-ink);
   padding:0 28px max(36px,env(safe-area-inset-bottom));
   transform:translateY(100%);
   transition:transform .38s cubic-bezier(.32,.72,0,1);
@@ -505,6 +509,271 @@ body::before{
   .sd-rule-thick{margin-left:calc(50% - 340px);margin-right:calc(50% - 340px);}
   .carousel-wrap{max-width:680px;margin:0 auto;padding:0 22px 28px;}
 }
+
+/* ════════════════════════════
+   CART
+════════════════════════════ */
+
+/* Cart badge on nav */
+.cart-wrap{position:relative;}
+.cart-badge{
+  position:absolute;top:-2px;right:-2px;
+  background:var(--mint-ink);color:var(--mint);
+  font-family:var(--f);font-size:8px;font-weight:600;
+  width:16px;height:16px;border-radius:50%;
+  display:none;align-items:center;justify-content:center;
+  line-height:1;
+}
+.cart-badge.show{display:flex;}
+
+/* Cart drawer overlay */
+.cart-overlay{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(12,12,10,.5);
+  opacity:0;pointer-events:none;
+  transition:opacity .28s;
+}
+.cart-overlay.open{opacity:1;pointer-events:all;}
+
+/* Cart drawer sheet */
+.cart-sheet{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--paper);
+  border-top:2px solid var(--mint-ink);
+  max-height:92dvh;
+  display:flex;flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .36s cubic-bezier(.32,.72,0,1);
+}
+.cart-overlay.open .cart-sheet{transform:translateY(0);}
+
+@media(min-width:768px){
+  .cart-sheet{
+    left:auto;right:0;top:0;bottom:0;
+    width:420px;max-height:100dvh;
+    border-top:none;border-left:2px solid var(--mint-ink);
+    transform:translateX(100%);border-radius:0;
+  }
+  .cart-overlay.open .cart-sheet{transform:translateX(0);}
+}
+
+.cart-grip{
+  width:32px;height:2px;background:var(--rule);
+  margin:14px auto 0;flex-shrink:0;
+}
+@media(min-width:768px){.cart-grip{display:none;}}
+
+.cart-head{
+  padding:14px 18px 12px;
+  border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+  background:var(--mint);
+}
+.cart-title{font-family:var(--f-serif);font-size:18px;font-weight:700;color:var(--mint-ink);}
+.cart-close{
+  background:none;border:none;font-size:24px;
+  color:var(--mint-ink);opacity:.5;padding:2px 6px;
+  cursor:pointer;transition:opacity .15s;line-height:1;
+}
+.cart-close:hover{opacity:1;}
+
+/* Cart items */
+.cart-items{flex:1;overflow-y:auto;padding:0;}
+.cart-empty{
+  padding:48px 20px;text-align:center;
+}
+.ce-icon{
+  font-family:var(--f-serif);font-size:36px;
+  color:var(--ink4);margin-bottom:10px;
+}
+.ce-text{
+  font-family:var(--f-std);font-size:13px;
+  font-style:italic;color:var(--ink3);
+}
+.cart-item{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 18px;border-bottom:1px solid var(--rule);
+}
+.ci-photo{
+  width:48px;height:48px;flex-shrink:0;
+  background:var(--paper3);border:1px solid var(--rule);
+  overflow:hidden;
+}
+.ci-photo img{width:100%;height:100%;object-fit:cover;}
+.ci-info{flex:1;min-width:0;}
+.ci-name{font-size:14px;font-weight:600;color:var(--ink);}
+.ci-price{
+  font-family:var(--f-serif);font-size:13px;
+  color:var(--ink3);margin-top:2px;
+}
+.ci-qty{
+  display:flex;align-items:center;gap:6px;flex-shrink:0;
+}
+.ci-btn{
+  width:28px;height:28px;border:1px solid var(--rule);
+  background:var(--paper2);color:var(--ink2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;transition:all .15s;
+}
+.ci-btn:hover{border-color:var(--ink);background:var(--paper);}
+.ci-n{
+  font-family:var(--f-serif);font-size:15px;
+  font-weight:700;color:var(--ink);min-width:20px;text-align:center;
+}
+.ci-remove{
+  background:none;border:none;color:var(--ink4);
+  font-size:18px;cursor:pointer;padding:2px;
+  transition:color .15s;flex-shrink:0;
+}
+.ci-remove:hover{color:#7A1A1A;}
+
+/* Cart footer — tip + checkout */
+.cart-footer{
+  border-top:1px solid var(--rule);
+  flex-shrink:0;
+  background:var(--paper);
+}
+
+/* Order note */
+.cart-note-wrap{padding:12px 18px;border-bottom:1px solid var(--rule);}
+.cart-note-lbl{
+  font-size:9px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:5px;
+}
+.cart-note-inp{
+  width:100%;border:1px solid var(--rule);
+  padding:8px 11px;font-family:var(--f-std);
+  font-size:13px;color:var(--ink);outline:none;
+  background:var(--paper2);transition:border-color .15s;
+  resize:none;
+}
+.cart-note-inp:focus{border-color:var(--ink);}
+
+/* Tip selector */
+.tip-wrap{padding:12px 18px;border-bottom:1px solid var(--rule);}
+.tip-lbl{
+  font-size:9px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:8px;
+}
+.tip-pills{display:flex;gap:5px;flex-wrap:wrap;}
+.tip-pill{
+  padding:6px 12px;font-size:11px;font-weight:500;
+  border:1px solid var(--rule);background:var(--paper2);
+  color:var(--ink2);cursor:pointer;transition:all .15s;
+  font-family:var(--f);
+}
+.tip-pill:hover{border-color:var(--ink2);}
+.tip-pill.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.tip-custom-wrap{
+  display:flex;align-items:center;gap:6px;margin-top:8px;
+}
+.tip-custom-lbl{font-size:12px;color:var(--ink3);}
+.tip-custom-inp{
+  width:70px;border:1px solid var(--rule);
+  padding:5px 8px;font-family:var(--f-serif);
+  font-size:14px;font-weight:700;text-align:center;
+  outline:none;background:var(--paper2);
+  transition:border-color .15s;
+}
+.tip-custom-inp:focus{border-color:var(--ink);}
+
+/* Order summary */
+.cart-summary{padding:12px 18px;border-bottom:1px solid var(--rule);}
+.cs-row{
+  display:flex;justify-content:space-between;
+  font-size:13px;margin-bottom:6px;
+}
+.cs-row:last-child{margin-bottom:0;}
+.cs-label{color:var(--ink3);}
+.cs-val{font-weight:600;color:var(--ink);}
+.cs-total-row{
+  display:flex;justify-content:space-between;
+  padding-top:8px;margin-top:8px;
+  border-top:1px solid var(--rule);
+}
+.cs-total-lbl{
+  font-family:var(--f-serif);font-size:16px;
+  font-weight:700;color:var(--ink);
+}
+.cs-total-val{
+  font-family:var(--f-serif);font-size:18px;
+  font-weight:700;color:var(--ink);
+}
+
+/* Payment buttons */
+.cart-pay-section{padding:12px 18px max(16px,env(safe-area-inset-bottom));}
+.cart-pay-lbl{
+  font-size:9px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:10px;
+}
+.pay-btns{display:flex;flex-direction:column;gap:7px;}
+.pay-btn{
+  width:100%;padding:13px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-family:var(--f);font-size:11px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  border:none;cursor:pointer;transition:all .2s;
+  text-decoration:none;
+}
+/* Venmo */
+.pay-btn.venmo{
+  background:var(--mint-ink);color:var(--mint);
+}
+.pay-btn.venmo:hover{background:var(--sage);}
+/* PayPal */
+.pay-btn.paypal{
+  background:var(--paper3);color:var(--ink);
+  border:1px solid var(--rule);
+}
+.pay-btn.paypal:hover{background:var(--paper2);}
+/* Zelle */
+.pay-btn.zelle{
+  background:var(--mint);color:var(--mint-ink);
+  border:1px solid var(--mint2);
+}
+.pay-btn.zelle:hover{background:var(--mint2);}
+
+/* Zelle info reveal */
+.zelle-info{
+  background:var(--paper2);border:1px solid var(--rule);
+  padding:12px 14px;margin-top:-3px;display:none;
+}
+.zelle-info.show{display:block;}
+.zi-label{
+  font-size:9px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:6px;
+}
+.zi-row{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.zi-value{font-size:14px;font-weight:600;color:var(--ink);}
+.zi-copy{
+  padding:5px 10px;font-size:9px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--rule);background:var(--paper);
+  color:var(--ink2);cursor:pointer;transition:all .15s;
+}
+.zi-copy:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+/* Success state */
+.cart-success{
+  padding:40px 20px;text-align:center;display:none;
+}
+.cart-success.show{display:block;}
+.cs-check{
+  font-size:40px;margin-bottom:14px;
+}
+.cs-title{
+  font-family:var(--f-serif);font-size:22px;
+  font-weight:700;color:var(--ink);margin-bottom:8px;
+}
+.cs-sub{
+  font-family:var(--f-std);font-size:13px;
+  font-style:italic;color:var(--ink3);
+  line-height:1.65;margin-bottom:20px;
+}
+
 </style>
 </head>
 <body>
@@ -539,6 +808,12 @@ body::before{
   <button class="bn" id="bn-faq" onclick="showPage('faq',this)">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     <span>FAQ</span><div class="bn-pip"></div>
+  </button>
+  <button class="bn cart-wrap" onclick="openCart()">
+    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span>Cart</span>
+    <div class="bn-pip"></div>
+    <span class="cart-badge" id="cart-badge">0</span>
   </button>
 </nav>
 
@@ -840,6 +1115,374 @@ const obs=new IntersectionObserver(
   {threshold:.08}
 );
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// ══════════════════════════════════════
+// CART
+// ══════════════════════════════════════
+let cart = []; // [{id, name, price, qty, photo}]
+let tipMode   = 15;   // 'none' | number | 'custom'
+let customTip = 0;
+
+// Menu data — mirrors admin library (hardcoded for demo, Firebase-connected in prod)
+const storeMenu = [
+  {id:'b1', name:'Maple Pecan Sourdough',      price:14, cat:'Breads',            note:'Preorder', photo:''},
+  {id:'b2', name:'Everything Bagel Sourdough', price:13, cat:'Breads',            note:'Preorder', photo:''},
+  {id:'b3', name:'Classic Sourdough Loaf',     price:12, cat:'Breads',            note:'Preorder', photo:''},
+  {id:'p1', name:'Cinnamon Rolls (3 Pack)',    price:15, cat:'Pastries & Sweets', note:'Preorder', photo:''},
+  {id:'s1', name:'Oatmeal Cream Pies (x2)',    price:12, cat:'Pastries & Sweets', note:'Preorder', photo:''},
+];
+
+// ── OPEN / CLOSE ──
+function openCart(){
+  document.getElementById('cart-overlay').classList.add('open');
+  renderCart();
+}
+function closeCart(){
+  document.getElementById('cart-overlay').classList.remove('open');
+}
+
+// ── ADD TO CART ──
+function addToCart(itemId){
+  const item = storeMenu.find(m=>m.id===itemId);
+  if(!item) return;
+  const existing = cart.find(c=>c.id===itemId);
+  if(existing){
+    existing.qty++;
+  } else {
+    cart.push({...item, qty:1});
+  }
+  updateCartBadge();
+  renderCart();
+  // Show a brief visual confirmation
+  showCartToast(item.name + ' added');
+}
+
+// Wire up all the + buttons on the menu
+function wireMenuButtons(){
+  const rows = document.querySelectorAll('.menu-row');
+  rows.forEach(row=>{
+    const btn = row.querySelector('.mr-add');
+    if(!btn) return;
+    // Find which item this is by matching name
+    const nameEl = row.querySelector('.mr-name');
+    if(!nameEl) return;
+    const name = nameEl.textContent.trim();
+    const item = storeMenu.find(m=>m.name===name);
+    if(item){
+      btn.onclick = (e)=>{ e.stopPropagation(); addToCart(item.id); };
+    }
+  });
+}
+// Wire on load and re-wire when pages switch
+wireMenuButtons();
+
+// ── UPDATE BADGE ──
+function updateCartBadge(){
+  const total = cart.reduce((a,c)=>a+c.qty,0);
+  const badge = document.getElementById('cart-badge');
+  if(!badge) return;
+  badge.textContent = total;
+  badge.classList.toggle('show', total>0);
+}
+
+// ── RENDER CART ──
+function renderCart(){
+  const empty   = document.getElementById('cart-empty');
+  const list    = document.getElementById('cart-item-list');
+  const footer  = document.getElementById('cart-footer');
+  const success = document.getElementById('cart-success');
+  if(!list) return;
+
+  // Hide success if showing
+  if(success) success.classList.remove('show');
+
+  if(cart.length===0){
+    if(empty)  empty.style.display='block';
+    if(list)   list.innerHTML='';
+    if(footer) footer.style.display='none';
+    return;
+  }
+
+  if(empty)  empty.style.display='none';
+  if(footer) footer.style.display='block';
+
+  list.innerHTML = cart.map(c=>`
+    <div class="cart-item">
+      <div class="ci-photo">
+        ${c.photo
+          ? `<img src="${c.photo}" alt="${c.name}"/>`
+          : `<div style="width:100%;height:100%;background:var(--paper3);display:flex;align-items:center;justify-content:center;">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="opacity:.2"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+             </div>`
+        }
+      </div>
+      <div class="ci-info">
+        <div class="ci-name">${c.name}</div>
+        <div class="ci-price">$${(c.price*c.qty).toFixed(2)}</div>
+      </div>
+      <div class="ci-qty">
+        <button class="ci-btn" onclick="changeQty('${c.id}',-1)">−</button>
+        <span class="ci-n">${c.qty}</span>
+        <button class="ci-btn" onclick="changeQty('${c.id}',+1)">+</button>
+      </div>
+      <button class="ci-remove" onclick="removeFromCart('${c.id}')" title="Remove">&#215;</button>
+    </div>`).join('');
+
+  updateSummary();
+}
+
+// ── CART ACTIONS ──
+function changeQty(id, delta){
+  const item = cart.find(c=>c.id===id);
+  if(!item) return;
+  item.qty = Math.max(0, item.qty+delta);
+  if(item.qty===0) cart = cart.filter(c=>c.id!==id);
+  updateCartBadge();
+  renderCart();
+}
+
+function removeFromCart(id){
+  cart = cart.filter(c=>c.id!==id);
+  updateCartBadge();
+  renderCart();
+}
+
+function resetCart(){
+  cart=[];
+  tipMode=15;
+  customTip=0;
+  // Reset tip pills
+  document.querySelectorAll('.tip-pill').forEach(p=>p.classList.remove('active'));
+  const defaultPill=document.querySelector('.tip-pill:nth-child(3)');
+  if(defaultPill) defaultPill.classList.add('active');
+  document.getElementById('tip-custom-wrap').style.display='none';
+  updateCartBadge();
+}
+
+// ── TIP ──
+function setTip(mode, btn){
+  tipMode = mode;
+  document.querySelectorAll('.tip-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const customWrap = document.getElementById('tip-custom-wrap');
+  if(mode==='custom'){
+    customWrap.style.display='flex';
+    document.getElementById('tip-custom-inp').focus();
+  } else {
+    customWrap.style.display='none';
+    customTip=0;
+  }
+  updateSummary();
+}
+
+function updateCustomTip(){
+  customTip = parseFloat(document.getElementById('tip-custom-inp').value)||0;
+  updateSummary();
+}
+
+function calcTip(subtotal){
+  if(tipMode==='none') return 0;
+  if(tipMode==='custom') return customTip;
+  return Math.round(subtotal * tipMode) / 100;
+}
+
+// ── SUMMARY ──
+function updateSummary(){
+  const subtotal = cart.reduce((a,c)=>a+(c.price*c.qty),0);
+  const tip      = calcTip(subtotal);
+  const total    = subtotal+tip;
+
+  const fmt = n=>'$'+n.toFixed(2);
+  const sub = document.getElementById('cs-subtotal');
+  const tipEl = document.getElementById('cs-tip');
+  const totEl = document.getElementById('cs-total');
+  const zelleAmt = document.getElementById('zelle-amount-reminder');
+
+  if(sub) sub.textContent = fmt(subtotal);
+  if(tipEl) tipEl.textContent = fmt(tip);
+  if(totEl) totEl.textContent = fmt(total);
+  if(zelleAmt) zelleAmt.textContent = fmt(total);
+}
+
+// ── PAYMENT HANDLERS ──
+function getOrderTotal(){
+  const subtotal = cart.reduce((a,c)=>a+(c.price*c.qty),0);
+  return (subtotal + calcTip(subtotal)).toFixed(2);
+}
+
+function getOrderMemo(){
+  const items = cart.map(c=>`${c.qty}x ${c.name}`).join(', ');
+  const note  = (document.getElementById('cart-note')||{}).value||'';
+  return encodeURIComponent('LBB Order: '+items+(note?'. Note: '+note:''));
+}
+
+function handleVenmo(e){
+  e.preventDefault();
+  const total = getOrderTotal();
+  const memo  = getOrderMemo();
+  // Venmo deep link — opens Venmo app with amount + memo pre-filled
+  const url = `venmo://paycharge?txn=pay&recipients=littlebitcakes&amount=${total}&note=${memo}`;
+  window.location.href = url;
+  // Show success after short delay (assume app opened)
+  setTimeout(()=>showOrderSuccess(), 1200);
+}
+
+function handlePayPal(){
+  const total = getOrderTotal();
+  // PayPal.me link — replace with her actual PayPal business email/link when live
+  const url = `https://www.paypal.com/paypalme/littlebitbakery/${total}`;
+  window.open(url,'_blank');
+  setTimeout(()=>showOrderSuccess(), 1500);
+}
+
+function toggleZelle(){
+  const panel = document.getElementById('zelle-info');
+  if(!panel) return;
+  panel.classList.toggle('show');
+  updateSummary(); // refresh amount reminder
+}
+
+function copyZelle(){
+  const contact = document.getElementById('zelle-contact').textContent;
+  navigator.clipboard.writeText(contact)
+    .then(()=>showCartToast('Copied to clipboard ✓'))
+    .catch(()=>showCartToast('Copy: '+contact));
+}
+
+function showOrderSuccess(){
+  const success = document.getElementById('cart-success');
+  const footer  = document.getElementById('cart-footer');
+  const list    = document.getElementById('cart-item-list');
+  const empty   = document.getElementById('cart-empty');
+  if(success){ success.classList.add('show'); success.style.display='block'; }
+  if(footer)  footer.style.display='none';
+  if(list)    list.innerHTML='';
+  if(empty)   empty.style.display='none';
+}
+
+// ── MINI TOAST FOR CART ──
+let cartToastT;
+function showCartToast(msg){
+  // Reuse modal toast styling
+  let t = document.getElementById('cart-toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'cart-toast';
+    t.style.cssText = `
+      position:fixed;bottom:calc(${getComputedStyle(document.documentElement).getPropertyValue('--nav-h')} + 20px);
+      left:50%;transform:translateX(-50%) translateY(6px);
+      z-index:700;background:var(--ink);color:var(--paper);
+      padding:8px 16px;font-family:var(--f);font-size:11px;font-weight:500;
+      letter-spacing:.06em;opacity:0;pointer-events:none;
+      transition:all .22s;white-space:nowrap;
+      border-top:2px solid var(--sage);
+    `;
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(cartToastT);
+  cartToastT=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(6px)';},2200);
+}
 </script>
+
+<!-- CART OVERLAY + DRAWER -->
+<div class="cart-overlay" id="cart-overlay" onclick="if(event.target===this)closeCart()">
+  <div class="cart-sheet">
+    <div class="cart-grip"></div>
+    <div class="cart-head">
+      <div class="cart-title">Your Order</div>
+      <button class="cart-close" onclick="closeCart()">&times;</button>
+    </div>
+
+    <!-- Items or empty state -->
+    <div class="cart-items" id="cart-items-wrap">
+      <div class="cart-empty" id="cart-empty">
+        <div class="ce-icon">&#128722;</div>
+        <div class="ce-text">Your cart is empty.<br/>Add items from the menu.</div>
+      </div>
+      <div id="cart-item-list"></div>
+    </div>
+
+    <!-- Footer — only shown when cart has items -->
+    <div class="cart-footer" id="cart-footer" style="display:none;">
+
+      <!-- Order note -->
+      <div class="cart-note-wrap">
+        <div class="cart-note-lbl">Order Note <span style="font-weight:300;text-transform:none;letter-spacing:0;color:var(--ink4);">(optional)</span></div>
+        <textarea class="cart-note-inp" id="cart-note" rows="2" placeholder="Allergies, special requests..."></textarea>
+      </div>
+
+      <!-- Tip -->
+      <div class="tip-wrap">
+        <div class="tip-lbl">Add a Tip</div>
+        <div class="tip-pills">
+          <button class="tip-pill" onclick="setTip('none',this)">No Tip</button>
+          <button class="tip-pill" onclick="setTip(10,this)">10%</button>
+          <button class="tip-pill active" onclick="setTip(15,this)">15%</button>
+          <button class="tip-pill" onclick="setTip(20,this)">20%</button>
+          <button class="tip-pill" onclick="setTip('custom',this)">Custom</button>
+        </div>
+        <div class="tip-custom-wrap" id="tip-custom-wrap" style="display:none;">
+          <span class="tip-custom-lbl">$</span>
+          <input class="tip-custom-inp" type="number" id="tip-custom-inp" min="0" step="0.50"
+            placeholder="0.00" oninput="updateCustomTip()"/>
+          <span class="tip-custom-lbl">custom tip</span>
+        </div>
+      </div>
+
+      <!-- Order summary -->
+      <div class="cart-summary">
+        <div class="cs-row"><span class="cs-label">Subtotal</span><span class="cs-val" id="cs-subtotal">$0.00</span></div>
+        <div class="cs-row"><span class="cs-label">Tip</span><span class="cs-val" id="cs-tip">$0.00</span></div>
+        <div class="cs-total-row">
+          <span class="cs-total-lbl">Total</span>
+          <span class="cs-total-val" id="cs-total">$0.00</span>
+        </div>
+      </div>
+
+      <!-- Payment options -->
+      <div class="cart-pay-section">
+        <div class="cart-pay-lbl">Pay With</div>
+        <div class="pay-btns">
+          <a class="pay-btn venmo" id="venmo-btn" href="#" onclick="handleVenmo(event)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M19.2 2C19.9 3.3 20.2 4.6 20.2 6.2c0 5-4.3 11.5-7.8 16H5.1L2 2.9l6.5-.6 1.6 12.8c1.5-2.5 3.3-6.4 3.3-9.1 0-1.5-.3-2.5-.7-3.4L19.2 2z"/></svg>
+            Pay with Venmo
+          </a>
+          <button class="pay-btn paypal" onclick="handlePayPal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#003087"><path d="M7.6 21.5H4.4l.5-3h3.1c3.5 0 5.8-1.8 6.5-5H5.7L6.2 10h8.7c-.1-2.8-2.2-4.5-5.7-4.5H4.8L5.9 2h4.9c5 0 7.8 2.8 7.5 7.5-.4 5.4-4.2 12-10.7 12z"/></svg>
+            Pay with PayPal
+          </button>
+          <button class="pay-btn zelle" onclick="toggleZelle()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Pay with Zelle
+          </button>
+          <!-- Zelle info panel -->
+          <div class="zelle-info" id="zelle-info">
+            <div class="zi-label">Send payment to</div>
+            <div class="zi-row">
+              <span class="zi-value" id="zelle-contact">littlebitbakery@gmail.com</span>
+              <button class="zi-copy" onclick="copyZelle()">Copy</button>
+            </div>
+            <div style="font-size:11px;color:var(--ink3);margin-top:8px;font-family:var(--f-std);font-style:italic;">
+              Include your order total <strong id="zelle-amount-reminder" style="font-style:normal;"></strong> in the memo.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Success state -->
+    <div class="cart-success" id="cart-success">
+      <div class="cs-check">&#10003;</div>
+      <div class="cs-title">Order Placed!</div>
+      <div class="cs-sub">Your order has been sent. Complete your payment via Venmo, PayPal, or Zelle to confirm your spot.<br/><br/>Angela will send a confirmation once payment is verified.</div>
+      <button class="modal-btn" onclick="resetCart();closeCart();" style="max-width:280px;margin:0 auto;display:block;">Done</button>
+    </div>
+
+  </div>
+</div>
+
 </body>
 </html>

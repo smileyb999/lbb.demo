@@ -1,0 +1,11 @@
+/* ============================================================
+   LITTLE BIT BAKERY — font faces (all local woff2, in /fontswoff2)
+   Linked from index.html before styles.css. Portable for a repo.
+   ============================================================ */
+@font-face{font-family:'Avrile Serif';src:url('fontswoff2/AvrileSerif-var.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Avrile Serif';src:url('fontswoff2/AvrileSerif-Italic-var.woff2') format('woff2');font-weight:100 900;font-style:italic;font-display:swap}
+@font-face{font-family:'Aqua Grotesque';src:url('fontswoff2/AquaGrotesque.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Hanken Grotesk';src:url('fontswoff2/HankenGrotesk-var.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Space Mono';src:url('fontswoff2/SpaceMono-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Space Mono';src:url('fontswoff2/SpaceMono-Bold.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Salt Waves';src:url('fontswoff2/SaltWaves-Regular.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}

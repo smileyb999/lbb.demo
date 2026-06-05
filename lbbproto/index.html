@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Little Bit Bakery — Frisco, Texas</title>
+<!-- single-file build v41 · footer revert + footerfloor backstop + HSW lead-in + HSW jank fix -->
+<meta name="description" content="A one-woman porch bakery in Frisco, Texas. Fresh sourdough, pastries, and treats every Saturday at 8am, till sold out.">
+<link rel="preload" as="image" href="LBBphotos/lbbstock3editcompressed.webp" fetchpriority="high">
+<link rel="stylesheet" href="fonts.css?v=13">
+<style>
+/* ============================================================
+   LITTLE BIT BAKERY — consolidated production styles
+   Assembly of 9 section wireframes. Concept by benji.
+   Each section's CSS is namespaced under its unique root class
+   (.hero .hsec .menu-sec .about .gal .love .cakes-sec .visit .footer)
+   so the generic class names (.body .eyebrow .photo .field .wordmark
+   .kicker) that repeat across files never collide.
+   ============================================================ */
+
+/* ---------- FONTS: see fonts.css (linked before this file) ---------- */
+
+/* ---------- TOKENS ---------- */
+:root{
+  /* locked palette */
+  --ink:#2B2A26; --paper:#F4F0E6; --paper2:#EAE3D2;
+  --sage:#BCDCB4; --sage-mist:#E4EFDD; --sage-soft:#D2E6CC; --pine:#2E4A38;
+  --caramel:#B8804A; --rose:#C98979; --cream:#F4F0E6;
+  --line:rgba(43,42,38,.14); --line-pine:rgba(244,240,230,.16);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  /* type stack */
+  --serif:'Avrile Serif',Georgia,'Times New Roman',serif;
+  --sans-display:'Aqua Grotesque','Hanken Grotesk',system-ui,sans-serif;
+  --sans:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
+  --mono:'Space Mono',ui-monospace,'SFMono-Regular',monospace;
+  --script:'Salt Waves','Avrile Serif',cursive;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+/* ---------- RESET / BASE ---------- */
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:transparent}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{max-width:100%;display:block}
+
+.page{position:relative;background:var(--paper)}
+
+/* ---------- LENIS (eased scroll) ---------- */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto !important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
+.lenis.lenis-smooth iframe{pointer-events:none}
+
+/* ---------- GLOBAL KEYFRAMES ---------- */
+@keyframes spinCCW{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes heroFade{to{opacity:1}}
+@keyframes heroRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+/* hero TYPE staggered entrance (type only — photo untouched) */
+@keyframes heroLabelDrop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@keyframes heroMarkRise{from{opacity:0;transform:translateY(18px);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes heroCountRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ---------- BOOT / LOAD ANIMATION ---------- */
+#boot{position:fixed;inset:0;z-index:9999;overflow:hidden}
+#boot .boot-panel{position:absolute;left:0;right:0;height:51%;background:var(--pine);z-index:2}
+/* iOS chrome fix (experiment v37): the boot is the topmost layer at first paint, so Safari
+   samples ITS pixels in the safe-area strips for the status-bar/toolbar tint — and that pine
+   sample sticks (no programmatic re-sample works here). Tint ONLY the safe-area edge of each
+   panel to the hero's resting chrome (paper top / sage bottom); the rest stays pine so the
+   open animation is identical. On desktop --safe-top/bottom = 0px, so panels stay fully pine.
+   ROLLBACK: delete the two background gradients below to restore solid-pine panels. */
+#boot .boot-top{top:0;background:linear-gradient(180deg,var(--paper) 0,var(--paper) var(--safe-top),var(--pine) var(--safe-top),var(--pine) 100%)}
+#boot .boot-bottom{bottom:0;background:linear-gradient(180deg,var(--pine) 0,var(--pine) calc(100% - var(--safe-bottom)),var(--sage) calc(100% - var(--safe-bottom)),var(--sage) 100%)}
+#boot.open .boot-top{transform:translateY(-101%);transition:transform .85s var(--ease)}
+#boot.open .boot-bottom{transform:translateY(101%);transition:transform .85s var(--ease)}
+#boot .boot-words{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.02em}
+#boot.open .boot-words{opacity:0;transition:opacity .4s var(--ease)}
+#boot .bw-line{font-family:var(--serif);color:var(--cream);line-height:1.05;font-size:clamp(40px,7vw,100px);font-weight:500}
+#boot .bw{display:inline-block;opacity:.5;transition:transform 1.15s var(--ease),opacity 1.15s var(--ease)}
+#boot.go .bw{opacity:1;transform:translate(0,0) !important}
+#boot .bw[data-w="make"]{transform:translate(-32vw,-7vh)}
+#boot .bw[data-w="your"]{transform:translate(0,-34vh)}
+#boot .bw[data-w="day"]{transform:translate(28vw,15vh)}
+#boot .bw[data-w="a"]{transform:translate(-24vw,22vh)}
+#boot .bw[data-w="bit"]{transform:translate(30vw,5vh)}
+#boot .bw[data-w="better"]{transform:translate(0,33vh)}
+
+/* ---------- CUSTOM RING CURSOR (hero only, pointer devices) ---------- */
+#cursor{position:fixed;top:0;left:0;width:30px;height:30px;margin:-15px 0 0 -15px;border:1.5px solid rgba(244,240,230,.85);border-radius:50%;pointer-events:none;z-index:9998;opacity:0;transition:opacity .3s var(--ease);will-change:transform}
+#cursor.on{opacity:1}
+.hero-cursor,.hero-cursor *{cursor:none}
+@media (hover:none),(pointer:coarse){#cursor{display:none}}
+@media (prefers-reduced-motion:reduce){#cursor{display:none}}
+
+/* ---------- NAV-TAB TRANSITION CURTAIN (Menu / About only) ---------- */
+/* two pine panels close to meet in the middle, the page jumps to the target
+   section behind them, then they open back up — a transition, not a fast scroll */
+#navcurtain{position:fixed;inset:0;z-index:9000;pointer-events:none}
+#navcurtain.run{pointer-events:auto}
+#navcurtain .nc-top,#navcurtain .nc-bottom{position:absolute;left:-1px;right:-1px;height:51%;background:var(--pine);will-change:transform;backface-visibility:hidden;transition:transform .5s var(--ease)}
+#navcurtain .nc-top{top:-2px;transform:translate3d(0,-101%,0)}
+#navcurtain .nc-bottom{bottom:-2px;transform:translate3d(0,101%,0)}
+#navcurtain.closed .nc-top,#navcurtain.closed .nc-bottom{transform:translate3d(0,0,0)}
+@media (prefers-reduced-motion:reduce){#navcurtain{display:none}}
+
+/* ============================================================
+   1 · HERO  (.hero)
+   ============================================================ */
+/* FULL-BLEED: photo fills the entire hero; wordmark + countdown + nav are
+   overlaid on top, with a gentle scrim so the text stays legible. */
+.hero{position:relative;height:100vh;height:100dvh;min-height:600px;background:#2B2A26 url("LBBphotos/lbbstock3editcompressed.webp") center/cover no-repeat;overflow:hidden}
+.hero .hero-photo{position:absolute;inset:-12px 0;width:100%;height:calc(100% + 24px)}
+.hero .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.hero .hero-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(43,42,38,.34),rgba(43,42,38,.18) 42%,rgba(43,42,38,.5));pointer-events:none}
+/* anchored to the bottom; wordmark bottom-left, countdown bottom-right (desktop) */
+.hero .hero-type{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.hero .body{display:flex;flex-direction:row;align-items:flex-end;justify-content:space-between;width:100%;gap:24px;padding:0 64px 46px}
+.hero .wordmark{text-align:left}
+.hero .wordmark .lb{font-family:var(--serif);font-weight:400;display:block;line-height:1;font-size:clamp(56px,6.2vw,94px);color:var(--cream)}
+.hero .wordmark .bk{font-family:var(--serif);font-weight:500;display:block;line-height:.92;font-size:clamp(60px,6.6vw,100px);letter-spacing:.01em;margin-top:2px;color:var(--cream)}
+.hero .count{text-align:right}
+.hero .count .cl{font-family:var(--sans-display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--caramel);font-weight:600;display:block;margin-bottom:9px}
+.hero .count .ct{font-family:var(--mono);font-size:30px;color:var(--cream);font-variant-numeric:tabular-nums;letter-spacing:.02em;display:block}
+.hero .count .cs{font-family:var(--sans-display);font-size:11.5px;letter-spacing:.08em;color:rgba(244,240,230,.82);text-transform:uppercase;display:block;margin-top:9px}
+.hero .wordmark,.hero .count .cl,.hero .count .ct,.hero .count .cs{opacity:0}
+body.hero-in .hero .count .cl{animation:heroLabelDrop .5s var(--ease) 0s both}
+body.hero-in .hero .wordmark{animation:heroMarkRise .7s var(--ease) .2s both}
+body.hero-in .hero .count .ct{animation:heroCountRise .6s var(--ease) .45s both}
+body.hero-in .hero .count .cs{animation:heroCountRise .6s var(--ease) .55s both}
+.hero .nav{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:flex-start;justify-content:space-between;padding:34px 64px;pointer-events:none}
+.hero .nav .tabs,.hero .nav .cta{pointer-events:auto}
+.hero .tabs{display:flex;gap:36px}
+.hero .tabs a{font-family:var(--sans-display);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream);text-decoration:none;font-weight:500;opacity:.92;transition:opacity .2s}
+.hero .tabs a:hover{opacity:1}
+.hero .cta{font-family:var(--sans-display);font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;color:var(--paper);background:var(--pine);padding:13px 24px;text-decoration:none;display:inline-flex;align-items:center;gap:9px;border-radius:8px;box-shadow:0 6px 20px rgba(46,74,56,.3)}
+.hero .cta .arr{transition:transform .3s}.hero .cta:hover .arr{transform:translateX(4px)}
+@media(max-width:760px){
+  .hero{min-height:560px}
+  /* mobile: stack centered, still anchored to the bottom of the hero */
+  .hero .body{flex-direction:column;align-items:center;justify-content:flex-end;gap:20px;padding:0 24px 40px}
+  .hero .wordmark{text-align:center}.hero .count{text-align:center}
+  .hero .wordmark .lb{font-size:46px}.hero .wordmark .bk{font-size:50px}
+  .hero .count .ct{font-size:26px}
+  .hero .nav{padding:22px}.hero .tabs{gap:18px}.hero .tabs a{font-size:11px;letter-spacing:.1em}.hero .cta{padding:10px 16px;font-size:11px}
+}
+
+/* ============================================================
+   1.5 · APPRECIATION  (sage, pinned, word-by-word highlight)
+   ============================================================ */
+.appreciation{position:relative;height:300vh;background:var(--sage)}
+.appreciation-pin{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 8vw;background:var(--sage);overflow:hidden}
+.appreciation .sunrise{width:64px;height:auto;color:var(--pine);opacity:.6;margin-bottom:44px;flex:none}
+.appreciation-copy{max-width:720px}
+.appr-line{font-family:var(--serif);font-size:clamp(28px,3.6vw,48px);line-height:1.32;margin:0 0 .55em}
+.appr-line .w{color:rgba(43,42,38,.22);transition:color .45s var(--ease)}
+.appr-line .w.lit{color:var(--ink)}
+.appr-script{font-family:var(--script);font-size:clamp(34px,4.4vw,60px);line-height:1.05;margin-top:.65em}
+.appr-script .w{color:rgba(184,128,74,.30);transition:color .45s var(--ease)}
+.appr-script .w.lit{color:var(--caramel)}
+@media(max-width:760px){
+  .appreciation-copy{max-width:none}
+  .appreciation .sunrise{width:52px;margin-bottom:32px}
+}
+@media (prefers-reduced-motion: reduce){
+  .appreciation{height:auto}
+  .appreciation-pin{position:static;height:auto;min-height:100vh}
+  .appr-line .w,.appr-script .w{transition:none}
+  .appr-line .w{color:var(--ink)}
+  .appr-script .w{color:var(--caramel)}
+}
+
+/* ============================================================
+   2 · HOW SATURDAY WORKS  (.hsec)
+   ============================================================ */
+.hsec{position:relative;height:690vh;background:var(--pine);--hgap:0px}
+.hsec .sticky{position:sticky;top:0;height:100vh;overflow:hidden}
+.hsec .track{display:flex;height:100vh;width:calc(100vw * 5 + var(--hgap,0px) * 4 + var(--hlead,0px));gap:var(--hgap,0px);padding-left:var(--hlead,0px);will-change:transform}   /* 5 panels × 100vw + 4 inter-panel pine gaps (--hgap, mobile only) */
+.hsec .panel{position:relative;width:100vw;height:100vh;flex:0 0 100vw;display:flex;flex-direction:column;justify-content:center;padding:0 16vw;color:var(--paper)}
+.hsec .bgnum{position:absolute;left:92vw;top:34%;transform:translate(-50%,-50%);font-family:var(--mono);font-weight:700;font-size:42vh;line-height:1;color:#3a5847;opacity:.45;z-index:0;pointer-events:none;user-select:none;letter-spacing:.02em}
+.hsec .pinner{position:relative;z-index:2;max-width:560px;margin-top:40px}
+.hsec .kicker{font-family:var(--sans-display);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--caramel);font-weight:600;margin-bottom:26px;display:block}
+.hsec .ptitle{font-family:var(--serif);font-size:60px;line-height:1.02;color:var(--paper);margin-bottom:24px;letter-spacing:.005em}
+.hsec .pbody{font-family:var(--serif);font-size:20px;line-height:1.6;color:#cfdccb;max-width:42ch}
+.hsec .intro{position:absolute;left:110px;top:46px;z-index:4}
+.hsec .sectkr{font-family:var(--sans-display);font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#9fab97;font-weight:600}
+.hsec .cta-panel{align-items:center;text-align:center;padding:0 40px}
+.hsec .cta-panel .pinner{max-width:680px;margin:0 auto}
+.hsec .cta-panel .ctatitle{font-family:var(--serif);font-size:64px;line-height:1.05;color:var(--paper);margin-bottom:18px}
+.hsec .cta-panel .ctasub{font-family:var(--serif);font-size:19px;color:#cfdccb;margin-bottom:40px;line-height:1.6}
+.hsec .cta-btn{display:inline-flex;align-items:center;gap:12px;font-family:var(--sans-display);font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--pine);background:var(--paper);padding:18px 34px;text-decoration:none;border-radius:2px}
+.hsec .cta-btn .arr{transition:transform .3s}.hsec .cta-btn:hover .arr{transform:translateX(5px)}
+.hsec .cta-panel .bgnum{color:#3a5847;opacity:.4}
+.hsec .pbar{position:absolute;left:110px;right:110px;bottom:54px;height:2px;background:rgba(244,240,230,.18);z-index:5}
+.hsec .pbar .fill{height:100%;width:100%;transform:scaleX(0);transform-origin:left center;background:var(--caramel);transition:transform .1s linear}
+.hsec .plabel{position:absolute;left:110px;bottom:66px;font-family:var(--sans-display);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9fbb9a;z-index:5}
+.hsec .pcount{position:absolute;right:110px;bottom:66px;font-family:var(--sans-display);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9fbb9a;z-index:5;font-variant-numeric:tabular-nums}
+@media(max-width:760px){
+  .hsec{--hgap:50vw;--hlead:38vw}   /* --hgap: pine between steps · --hlead: pine runway BEFORE step 1 so you flow in instead of blowing past it (mobile only; tune freely) */
+  .hsec .panel{padding:0 24px}.hsec .ptitle{font-size:38px}.hsec .pbody{font-size:17px;max-width:none}
+  .hsec .bgnum{font-size:30vh;left:auto;right:10vw}
+  .hsec .intro{left:28px;top:80px}.hsec .secttl{font-size:22px}
+  .hsec .pbar,.hsec .plabel{left:28px}.hsec .pbar{right:28px}.hsec .pcount{right:28px}
+  .hsec .cta-panel .ctatitle{font-size:40px}
+}
+
+/* HSW — compositor-driven horizontal scroll (survives iOS Low Power Mode) */
+@supports (animation-timeline: view()){
+  .hsec{view-timeline:--hsw block}
+  .hsec .track{
+    animation:hsw-track linear both;
+    animation-timeline:--hsw;
+    animation-range:contain 0% contain 100%;   /* contain = the span where .hsec fully covers the viewport = exactly the pinned span (top-hits-top → bottom-hits-bottom) */
+  }
+  .hsec .pbar .fill{
+    animation:hsw-fill linear both;
+    animation-timeline:--hsw;
+    animation-range:contain 0% contain 100%;
+    transition:none;   /* CSS drives scaleX directly — drop the .1s transition so it tracks scroll exactly */
+  }
+  @keyframes hsw-track{
+    from{transform:translate3d(0,0,0)}
+    to{transform:translate3d(calc(-1 * (100vw * 5 + var(--hgap,0px) * 4 + var(--hlead,0px) - 100vw)),0,0)}
+  }
+  @keyframes hsw-fill{
+    from{transform:scaleX(0)}
+    to{transform:scaleX(1)}
+  }
+}
+
+/* ---------- REDUCED MOTION: hero type + HSW ---------- */
+@media (prefers-reduced-motion: reduce){
+  /* hero type shown immediately — no entrance */
+  .hero .count .cl,.hero .wordmark,.hero .count .ct,.hero .count .cs{
+    opacity:1;transform:none;filter:none;animation:none;
+  }
+  /* HSW: unwind the pin/horizontal track into a clean vertical sequence */
+  .hsec{height:auto}
+  .hsec .sticky{position:static;height:auto;overflow:visible}
+  .hsec .intro{position:static;left:auto;top:auto;padding:44px 24px 0}
+  .hsec .track{display:block;width:auto;height:auto;transform:none !important;animation:none !important;gap:0;padding-left:0}
+  .hsec .pbar,.hsec .plabel,.hsec .pcount{display:none}
+  .hsec .pbar .fill{animation:none !important}
+  /* designed stacked step — editorial calm, like Menu/Crew */
+  .hsec .panel{
+    position:relative;width:100%;height:auto;flex:none;
+    display:block;
+    padding:44px 24px;
+    border-top:1px solid rgba(244,240,230,.14);
+    overflow:hidden;
+  }
+  .hsec .panel:first-of-type{border-top:none}
+  /* quiet Space Mono number overlay behind each step */
+  .hsec .bgnum{
+    position:absolute;left:auto;right:16px;top:50%;transform:translateY(-50%);
+    font-size:clamp(90px,26vw,150px);
+    opacity:.22;z-index:0;
+  }
+  .hsec .pinner{position:relative;z-index:2;max-width:640px;margin:0;}
+  .hsec .ptitle{font-size:clamp(30px,7vw,42px);margin-bottom:16px;}
+  .hsec .pbody{font-size:18px;max-width:52ch;}
+  .hsec .cta-panel{padding:44px 24px;text-align:left;align-items:stretch;}
+  .hsec .cta-panel .pinner{max-width:none;margin:0;}
+}
+
+/* ============================================================
+   3 · MENU  (.menu-sec)
+   ============================================================ */
+.menu-sec{position:relative;max-width:1240px;margin:0 auto;padding:116px 64px 128px;overflow:hidden}
+.menu-sec .m-head{text-align:right;margin-bottom:84px;opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.menu-sec .m-head.in{opacity:1;transform:none}
+.menu-sec .m-head .date{font-family:var(--sans-display);font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--caramel);font-weight:600;display:block;margin-bottom:14px}
+.menu-sec .m-head .title{font-family:var(--serif);font-size:70px;line-height:.98;letter-spacing:.005em}
+.menu-sec .m-head .title em{font-style:italic;font-weight:400}
+.menu-sec .m-note{font-family:var(--sans);font-size:14px;line-height:1.5;color:var(--caramel);font-weight:500;margin-top:14px;letter-spacing:.01em}
+.menu-sec .m-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px 96px;align-items:start}
+.menu-sec .col-left{padding-top:18px}
+.menu-sec .group{margin-bottom:64px;opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.menu-sec .group.in{opacity:1;transform:none}
+/* stagger so groups drop in one-by-one even when they enter together */
+.menu-sec .group[data-reveal="2"]{transition-delay:.12s}
+.menu-sec .group[data-reveal="3"]{transition-delay:.24s}
+.menu-sec .group:last-child{margin-bottom:0}
+.menu-sec .gtitle{font-family:var(--sans-display);font-size:14px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink);font-weight:600;margin-bottom:16px}
+.menu-sec .grule{height:1px;background:#d3cab6;margin-bottom:30px}
+.menu-sec .item{margin-bottom:34px}
+.menu-sec .item:last-child{margin-bottom:0}
+.menu-sec .iname{display:flex;align-items:baseline;gap:14px;margin-bottom:7px}
+.menu-sec .iname .t{font-family:var(--serif);font-size:23px;color:var(--ink);font-weight:500}
+.menu-sec .iname .star{color:var(--caramel);font-size:15px;transform:translateY(-2px)}
+.menu-sec .iname .dots{flex:1;border-bottom:1px dotted #c4bca8;transform:translateY(-5px);min-width:24px}
+.menu-sec .iname .pr{font-family:var(--sans);font-size:17px;color:#6f6a5c;font-variant-numeric:tabular-nums}
+.menu-sec .idesc{font-family:var(--sans);font-size:14.5px;line-height:1.55;color:#847e6f;max-width:46ch}
+.menu-sec .legend{margin-top:64px;font-family:var(--sans-display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#8a8474;display:flex;align-items:center;gap:8px}
+.menu-sec .legend .star{color:var(--caramel);font-size:13px}
+.menu-sec .seal-wrap{position:absolute;left:150px;top:auto;bottom:9%;transform:none;width:156px;height:156px;pointer-events:none;opacity:0;transition:opacity 1s var(--ease)}
+.menu-sec .seal-wrap.in{opacity:1}
+.menu-sec .seal{width:100%;height:100%;animation:spinCCW 30s linear infinite}
+.menu-sec .seal text{font-family:var(--sans-display);font-size:9px;letter-spacing:.22em;fill:var(--pine);text-transform:uppercase;font-weight:600}
+@media(max-width:820px){
+  .menu-sec{padding:72px 24px 86px}
+  .menu-sec .m-head .title{font-size:42px}
+  .menu-sec .m-grid{grid-template-columns:1fr;gap:0}
+  .menu-sec .col-left{padding-top:0;order:2}.menu-sec .col-right{order:1;margin-bottom:64px}
+  .menu-sec .seal-wrap{position:static;transform:none;top:auto;margin:48px auto 0;left:auto;bottom:auto}
+  .menu-sec .legend{justify-content:flex-start}
+}
+
+/* ============================================================
+   4 · ABOUT / MY STORY  (.about)
+   ============================================================ */
+/* About is the cover layer: it rises up and slides OVER the Menu (pine on
+   cream). overflow:hidden removed so the sticky photo works. The actual
+   "menu holds, About rises over it" mechanic is the desktop block below. */
+.about{position:sticky;z-index:2;background:var(--pine);color:var(--paper);padding:130px 64px 130px}
+.about .about-inner{max-width:1240px;margin:0 auto}
+
+/* ----- MENU -> ABOUT cover (desktop): menu pins bottom-aligned at its end
+   (sticky top set by JS), holds for .menu-stage's padding, then the pine
+   About slides up over it. ----- */
+/* applies at ALL breakpoints (incl. mobile) so the menu sequence can't be blown past */
+.menu-stage{position:relative}
+.menu-sec{position:sticky;z-index:1}        /* top set in JS = innerHeight - menuHeight */
+.menu-hold{height:105vh}                     /* in-flow spacer = sticky travel; > 100vh so About FULLY covers before release */
+/* About rides in .about-stage: it covers the Menu (stage pulled up over the
+   menu-hold) AND pins at its own end so the Gallery can cover it next. */
+.about-stage{position:relative;margin-top:-105vh}
+.about-hold{height:105vh}
+/* Gallery cover layer: full-width, opaque, rises over pinned About */
+.gal-wrap{position:relative;z-index:3;margin-top:-105vh;background:var(--paper)}
+/* DESKTOP: menu fills the viewport so it pins at top:0 at FULL natural height
+   (not squished; seal sits in its own negative space). The longer hold gives a
+   buffer where the reveal sequence finishes BEFORE About starts rising. */
+@media(min-width:861px){
+  .menu-sec{min-height:100vh}
+  .menu-hold{height:150vh}                    /* ~45vh reveal buffer + ~105vh cover */
+}
+@media (prefers-reduced-motion: reduce){     /* no scroll-lock / cover under reduced motion */
+  .menu-sec{position:static;min-height:0}
+  .menu-hold{height:0}
+  .about{position:static}
+  .about-stage{margin-top:0}
+  .about-hold{height:0}
+  .gal-wrap{margin-top:0}
+}
+.about .kicker{font-family:var(--sans-display);font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--sage);font-weight:600;margin-bottom:54px;display:block}
+/* copy settles in (transform only — never hidden, so the photo/text can't disappear) */
+.about .copy-col{transform:translateY(26px);transition:transform .9s var(--ease)}
+.about.in .copy-col{transform:none}
+.about .grid{display:grid;grid-template-columns:1.05fr .95fr;grid-template-rows:auto 1fr;gap:0 80px;align-items:start}
+.about .copy-col{grid-column:1;grid-row:1}
+.about .crew-col{grid-column:1;grid-row:2;margin-top:64px}
+.about .photo-col{grid-column:2;grid-row:1 / span 2}
+.about .lede{font-family:var(--serif);font-weight:600;font-size:38px;line-height:1.16;letter-spacing:-.01em;margin-bottom:28px}
+.about .lede .hl{color:var(--sage);font-weight:400}
+.about .body p{font-family:var(--serif);font-size:19px;line-height:1.65;color:rgba(244,240,230,.84);max-width:52ch;margin-top:18px}
+.about .body p:first-child{margin-top:0}
+.about .crew-head{margin-bottom:28px}
+.about .crew-head .ct{font-family:var(--serif);font-size:28px;color:var(--paper)}
+.about .crew-head .cs{font-family:var(--script);font-size:19px;color:var(--sage);opacity:.85;margin-top:4px}
+.about .crew{display:flex;flex-direction:column;gap:14px}
+.about .member{display:grid;grid-template-columns:auto 1fr auto;align-items:baseline;column-gap:16px;padding:16px 0;border-bottom:1px solid rgba(188,220,180,.18);opacity:0;transform:translateY(18px);transition:opacity .55s ease-out,transform .55s ease-out}
+.about .member:last-child{border-bottom:none}
+.about .member.in{opacity:1;transform:none}
+.about .m-tag{font-family:var(--sans-display);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--sage);font-weight:600;align-self:center}
+.about .m-name{font-family:var(--serif);font-size:22px;color:var(--paper);line-height:1;white-space:nowrap}
+.about .m-role{font-family:var(--sans);font-size:13px;line-height:1.4;color:rgba(244,240,230,.55);text-align:right}
+/* sticky-release: photo pins ~96px from top while the taller text/crew column
+   scrolls past it, then unpins and scrolls away once its grid column ends.
+   Pure CSS sticky — no JS transforms. Grid parent already uses align-items:start. */
+.about .photo-col{position:sticky;top:96px;align-self:start}
+.about .photo-frame{position:relative;height:78vh;border-radius:28px;overflow:hidden;background:#5f7e68}
+.about .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;background:#5f7e68}
+.about .ph-cap{position:absolute;left:20px;bottom:18px;font-family:var(--sans-display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,240,230,.7);z-index:2}
+@media(max-width:820px){
+  .about{padding:80px 24px 90px}
+  .about .grid{display:flex;flex-direction:column;gap:40px}
+  .about .copy-col{order:1;width:100%}
+  .about .photo-col{order:2;width:100%;position:static;top:auto}
+  .about .crew-col{order:3;margin-top:0;width:100%}
+  .about .lede{font-size:29px}
+  .about .photo-col{position:static;top:auto}
+  .about .photo-frame{position:relative;top:0;height:340px;border-radius:22px;width:100%}
+  .about .crew{display:flex;flex-direction:column;gap:0}
+.about .member{grid-template-columns:auto 1fr;column-gap:12px}
+.about .m-role{grid-column:1 / -1;text-align:left;margin-top:4px}
+}
+
+/* ============================================================
+   5 · GALLERY / THE GOOD STUFF  (.gal)
+   ============================================================ */
+.gal{position:relative;max-width:1280px;margin:0 auto;padding:104px 64px 110px;overflow:hidden}
+.gal .g-head{margin-bottom:20px;position:relative;z-index:5;max-width:34ch}
+.gal .g-head .title{font-family:var(--serif);font-size:58px;line-height:1;margin-bottom:14px}
+.gal .g-head .sub{font-family:var(--sans);font-size:15px;color:#7a7464;line-height:1.55}
+.gal .field{position:relative;height:780px;margin-top:0}
+.gal .pol{position:absolute;background:#fff;padding:13px 13px 40px;box-shadow:0 16px 34px rgba(43,42,38,.15);opacity:0;
+      transition:opacity .7s ease-out, box-shadow .35s ease, transform .18s ease-out;cursor:pointer}
+.gal .pol .inner{transition:transform .7s cubic-bezier(.2,.8,.25,1);width:100%;height:100%;overflow:hidden}
+.gal .pol .ph{display:block;width:100%;height:100%;object-fit:cover}
+.gal .pol .num{position:absolute;right:15px;bottom:14px;font-family:var(--sans-display);font-size:10px;letter-spacing:.14em;color:#a39c8c;z-index:2}
+.gal .pol .cap{position:absolute;left:15px;bottom:13px;max-width:64%;font-family:var(--serif);font-size:14px;color:#6a665c}
+.gal .pol:hover{box-shadow:0 28px 54px rgba(43,42,38,.26);z-index:20}
+.gal .p1{width:194px;height:230px;left:1%;top:120px}
+.gal .p1 .ph{background:#cfe0c7}
+.gal .p3{width:182px;height:218px;left:20%;top:30px}
+.gal .p3 .ph{background:#dfc7bd}
+.gal .p5{width:176px;height:210px;left:23%;top:430px}
+.gal .p5 .ph{background:#e4d2c9}
+.gal .p2{width:200px;height:238px;left:42%;top:150px}
+.gal .p2 .ph{background:#e7d3c4}
+.gal .p6{width:182px;height:218px;left:60%;top:450px}
+.gal .p6 .ph{background:#cfe0c7}
+.gal .p4{width:194px;height:232px;right:1%;top:90px}
+.gal .p4 .ph{background:#d7e3cf}
+.gal .follow{margin-top:18px;position:relative;z-index:5}
+.gal .follow a{display:inline-flex;align-items:center;gap:11px;font-family:var(--sans-display);font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--caramel);padding-bottom:5px}
+.gal .follow .h{color:var(--caramel)}
+.gal .follow svg{width:19px;height:19px;stroke:var(--caramel)}
+/* full-bleed ticker — lives between Gallery and Love, edge to edge */
+.ticker{margin-top:40px;padding-bottom:30px;border-bottom:1px solid var(--ink);overflow:hidden;white-space:nowrap;width:100%}
+.ticker-track{display:inline-flex;align-items:center;animation:tickerScroll 38s linear infinite;will-change:transform}
+.ticker-track span{font-family:var(--serif);font-size:30px;color:var(--ink);letter-spacing:.01em;padding:0 4px}
+.ticker-track .sun{display:inline-flex;align-items:center;color:var(--caramel);padding:0 26px}
+.ticker-track .sun svg{width:22px;height:22px}
+@media(max-width:860px){
+  .gal{padding:64px 22px 70px}
+  .gal .g-head .title{font-size:40px}
+  .gal .field{height:auto;margin-top:30px;display:flex;flex-direction:column;gap:26px}
+  .gal .pol{position:static !important;width:74% !important;height:auto !important;}
+  .gal .pol .ph{height:auto;aspect-ratio:5/6}
+  .gal .pol:nth-child(odd){align-self:flex-start;transform:rotate(-3deg) !important}
+  .gal .pol:nth-child(even){align-self:flex-end;transform:rotate(3deg) !important}
+  .gal .pol .inner{transform:none !important}
+  .gal .follow{margin-top:46px}
+}
+
+/* ============================================================
+   6 · A LITTLE LOVE LATELY  (.love)
+   (body overflow-x:hidden from the wireframe intentionally dropped)
+   ============================================================ */
+.love{position:relative;max-width:1240px;margin:0 auto;padding:104px 64px 120px}
+.love .eyebrow{font-family:var(--sans-display);font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--caramel);font-weight:600;margin-bottom:24px;display:block}
+.love .lede{font-family:var(--serif);font-size:52px;line-height:1.06;letter-spacing:-.01em;max-width:18ch;margin-bottom:70px}
+.love .feature{position:relative;min-height:430px;margin-bottom:96px}
+.love .stat-kicker{position:absolute;left:calc(50% - 50vw + 24px);top:-44px;font-family:var(--sans-display);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--caramel);font-weight:600}
+@media(max-width:860px){.love .stat-kicker{position:static;margin:0 0 14px -22px;padding-left:22px}}
+/* stat tabs: left-bleeding, stacked tight (calc(...50%...) resolves against .feature) */
+.love .stats{position:static}
+.love .stat{position:absolute;left:calc(50% - 50vw);width:min(440px,46vw);z-index:2;background:var(--sage-mist);border-radius:0 18px 18px 0;
+      padding:24px 38px 24px calc(50vw - 50% + 64px);box-shadow:0 14px 34px rgba(46,74,56,.10)}
+.love .stats .stat:nth-child(1){top:0}
+.love .stats .stat:nth-child(2){top:142px}
+.love .stat .num{font-family:var(--serif);font-size:56px;line-height:1;color:var(--pine);letter-spacing:-.01em}
+.love .stat .num .plus{color:var(--sage)}
+.love .stat .lab{font-family:var(--sans-display);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#7a7464;margin-top:10px}
+/* kelly card: bleeds right, staggered lower but overlapping the stat band */
+.love .kelly{position:absolute;right:calc(50% - 50vw);top:132px;width:min(660px,60vw);background:var(--pine);color:var(--paper);z-index:1;
+       border-radius:18px 0 0 18px;padding:40px 64px 40px 46px;box-shadow:0 18px 44px rgba(46,74,56,.18)}
+.love .kelly .kk{font-family:var(--script);font-size:27px;letter-spacing:.01em;color:var(--sage);font-weight:400;display:block;margin-bottom:16px;line-height:1}
+.love .kelly p{font-family:var(--serif);font-size:21px;line-height:1.5}
+.love .kelly a{color:var(--sage);text-decoration:none;border-bottom:1px solid rgba(188,220,180,.5)}
+.love .crit-head{text-align:left;font-family:var(--script);font-size:52px;line-height:1;color:var(--ink);margin:24px 0 -28px;padding-left:calc(50% - 50vw + 60px);max-width:none;position:relative;z-index:3}
+/* reviews: single auto-rotating crossfade carousel */
+.love .reviews{position:relative;max-width:780px;margin:0 auto;min-height:210px}
+/* opacity-only crossfade — no transform, so the entering review never shifts/jumps */
+.love .review{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;transition:opacity .8s var(--ease);pointer-events:none}
+.love .review.active{opacity:1;pointer-events:auto}
+.love .stars{color:var(--caramel);font-size:14px;letter-spacing:4px;margin-bottom:20px}
+.love .review .q{font-family:var(--serif);font-size:26px;line-height:1.24;color:var(--ink);margin-bottom:22px;letter-spacing:-.005em}
+.love .review .by b{display:block;color:var(--ink);font-weight:600;font-size:13.5px;letter-spacing:.04em;margin-bottom:3px}
+.love .review .by span{font-family:var(--sans);font-size:13px;color:#8a8474}
+.love .review-dots{display:flex;justify-content:center;gap:10px;margin-top:30px}
+.love .rev-dot{width:8px;height:8px;border-radius:50%;border:none;padding:0;background:rgba(43,42,38,.20);cursor:pointer;transition:background .35s var(--ease),transform .35s var(--ease)}
+.love .rev-dot:hover{background:rgba(43,42,38,.4)}
+.love .rev-dot.active{background:var(--caramel);transform:scale(1.3)}
+.love .press{position:relative;margin-top:120px;left:calc(50% - 50vw);width:min(1080px,94vw);
+        background:var(--sage-mist);border-radius:0 22px 22px 0;box-shadow:0 16px 40px rgba(46,74,56,.12);
+        display:grid;grid-template-columns:.4fr .6fr;gap:54px;align-items:center;
+        padding:54px 64px 54px calc(50vw - 50% + 64px)}
+.love .press-photo{display:flex;justify-content:flex-start}
+.love .polaroid{background:#fff;padding:12px 12px 50px;box-shadow:0 16px 34px rgba(43,42,38,.16);transform:rotate(-4deg);width:212px;position:relative}
+.love .polaroid .ph{display:block;width:100%;height:224px;object-fit:cover;background:linear-gradient(160deg,#dfc7bd,#e7d3c4)}
+.love .polaroid .cap{position:absolute;left:14px;right:14px;bottom:15px;font-family:var(--serif);font-size:15px;color:#6a665c;text-align:center}
+.love .polaroid .cap small{display:block;font-family:var(--sans-display);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:#b0a994;margin-top:5px}
+.love .press-body{text-align:right}
+.love .press-body .pk{font-family:var(--sans-display);font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--caramel);font-weight:600;display:block;margin-bottom:18px}
+.love .press-list{font-family:var(--serif);font-size:28px;line-height:1.4;color:var(--ink)}
+.love .press-list .dot{color:var(--sage);padding:0 9px}
+.love .oven{font-family:var(--serif);font-size:17px;line-height:1.6;color:#5d584c;margin-top:22px;max-width:52ch;margin-left:auto}
+/* press / feature logo bar (logos only) */
+.love .presslogos{margin-top:96px;text-align:center}
+.love .pl-label{font-family:var(--sans-display);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#8a8474;font-weight:600;display:block;margin-bottom:28px}
+.love .pl-row{display:flex;justify-content:center;align-items:center;gap:clamp(28px,4.5vw,58px);flex-wrap:wrap}
+/* Both press marks render as flat sage silhouettes via CSS mask (--logo = the PNG).
+   Both PNGs are tight crops, sized to a MATCHING height; each width follows its own
+   aspect (LP 2.56:1, SLM 5.70:1). Revealed one-by-one on scroll. */
+.love .pl-item{opacity:0;transform:translateY(15px);transition:opacity .65s var(--ease),transform .65s var(--ease)}
+.love .pl-item.in{opacity:1;transform:none}
+
+.love .pl-logo{display:inline-block;height:52px;width:133px;background:var(--sage);
+  -webkit-mask:var(--logo) center/contain no-repeat;mask:var(--logo) center/contain no-repeat}
+/* Star Local Media is a very wide lockup (5.70:1) — same 46px height as Local Profile, wider box.
+   Single tunable: change the shared height on both lines below to scale them together. */
+.love .pl-logo[aria-label="Star Local Media"]{height:42px;width:239px}
+@media(max-width:760px){
+  .love .pl-logo{height:43px;width:110px}
+  .love .pl-logo[aria-label="Star Local Media"]{height:34px;width:194px}
+}
+
+@media(max-width:860px){
+  .love{padding:70px 22px 84px}
+  .love .lede{font-size:34px;margin-bottom:40px}
+  .love .feature{min-height:0;display:flex;flex-direction:column;gap:14px}
+  .love .stats{position:static;width:78%;margin-left:-22px;display:flex;flex-direction:column;gap:12px}
+  .love .stat{position:static;width:100%;border-radius:0 16px 16px 0;padding:22px 30px 22px 22px}
+  .love .stat .num{font-size:44px}
+  .love .kelly{position:static;width:90%;align-self:flex-end;border-radius:16px 0 0 16px;padding:28px 22px 28px 26px;margin-right:-22px;margin-top:10px}
+  .love .kelly p{font-size:18px}
+  .love .crit-head{font-size:40px;margin:36px 0 40px;text-align:center;padding-left:0}
+  .love .reviews{min-height:260px;max-width:none}
+  .love .press{position:static;width:88%;margin:64px 0 0 -22px;border-radius:0 18px 18px 0;grid-template-columns:1fr;gap:30px;text-align:center;padding:36px 28px 36px 24px}
+  .love .press-photo{justify-content:center}
+  .love .press-body{text-align:center}
+  .love .oven{margin:22px auto 0}
+  .love .press-list{font-size:24px}
+}
+
+/* ============================================================
+   7 · CUSTOM CAKES  (.cakes-sec)
+   ============================================================ */
+.cakes-sec{padding:clamp(80px,11vw,150px) 34px}
+.cakes-sec .card{position:relative;overflow:hidden;border-radius:26px;
+      background:linear-gradient(180deg, var(--sage-mist) 0%, #d6ead0 52%, #c7e0c0 100%);
+      padding:clamp(28px,4vw,60px);box-shadow:0 24px 60px rgba(46,74,56,.14)}
+.cakes-sec .card::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(90deg,var(--sage) 0 28px,transparent 28px 56px);
+  opacity:.42;
+  -webkit-mask-image:radial-gradient(90% 105% at 50% 0%,#000,transparent 72%);
+          mask-image:radial-gradient(90% 105% at 50% 0%,#000,transparent 72%);
+}
+.cakes-sec .card-inner{position:relative;z-index:1}
+/* frames clip a slightly-oversized image so it can drift within for the depth
+   parallax (JS), and so the wide top photo can be cropped past its blurry right edge */
+.cakes-sec .cake-frame{position:relative;overflow:hidden;border-radius:14px;background:linear-gradient(150deg,#cde0c6,#bcd6b2);box-shadow:0 10px 28px rgba(46,74,56,.10)}
+.cakes-sec .frame-top{width:100%;height:clamp(280px,38vw,460px);margin-bottom:clamp(20px,2.4vw,34px)}
+.cakes-sec .cake-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* base framing (also the reduced-motion / no-JS static state): both photos sit
+   centered, cover-filled, with a slight zoom that gives the parallax drift room. */
+/* DESKTOP framing. Top (wide-short frame) is biased toward the image top so the
+   full frosting peak shows. Tall (near-square desktop frame vs a portrait photo)
+   is biased toward the top so the buttercream flowers aren't clipped. Slight scale
+   gives the parallax drift room. Mobile object-position is reset to center below. */
+.cakes-sec .frame-top .cake-img{object-position:center 38%;transform:translate3d(0,0,0) scale(1.12)}
+.cakes-sec .frame-tall .cake-img{object-position:center 14%;transform:translate3d(0,0,0) scale(1.05)}
+.cakes-sec .lower{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,4vw,56px);align-items:stretch}
+.cakes-sec .intake{align-self:start}
+.cakes-sec .eyebrow{font-family:var(--sans-display);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--pine);font-weight:600;margin-bottom:16px;display:block}
+.cakes-sec .paused-note{display:inline-flex;align-items:center;background:transparent;color:var(--rose);
+  border:1px solid var(--rose);padding:8px 18px;font-family:var(--sans-display);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin-bottom:22px;border-radius:4px}
+.cakes-sec .ctitle{font-family:var(--serif);font-size:clamp(36px,4.2vw,50px);line-height:1.02;color:var(--ink);margin-bottom:16px}
+.cakes-sec .cbody{font-family:var(--serif);font-size:17px;line-height:1.55;color:#3c4a3f;max-width:48ch;margin-bottom:26px}
+.cakes-sec .form{display:grid;gap:12px;max-width:460px}
+.cakes-sec .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cakes-sec .field{background:rgba(255,255,255,.62);border:1px solid rgba(46,74,56,.2);border-radius:9px;padding:13px 15px;font-family:var(--sans);font-size:14px;color:var(--ink);width:100%}
+.cakes-sec .field::placeholder{color:#73806f}
+.cakes-sec textarea.field{resize:none;min-height:96px}
+.cakes-sec .submit{justify-self:start;margin-top:4px;font-family:var(--sans-display);font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;color:var(--paper);background:var(--pine);border:none;border-radius:8px;padding:14px 26px;cursor:pointer;display:inline-flex;align-items:center;gap:9px}
+.cakes-sec .submit .arr{transition:transform .3s}.cakes-sec .submit:hover .arr{transform:translateX(4px)}
+.cakes-sec .frame-tall{align-self:stretch;min-height:100%;background:linear-gradient(150deg,#d7c4bb,#c9b3a8)}
+@media(max-width:860px){
+  .cakes-sec{padding:64px 16px}
+  .cakes-sec .card{padding:22px;border-radius:20px}
+  .cakes-sec .card-inner{display:flex;flex-direction:column}
+  .cakes-sec .frame-top{height:260px;order:1;margin-bottom:24px}
+  .cakes-sec .frame-top .cake-img{object-position:center}   /* mobile shows full height already */
+  .cakes-sec .frame-tall .cake-img{object-position:center}  /* mobile frame ≈ photo aspect → centered shows the whole cake */
+  .cakes-sec .lower{display:contents}
+  .cakes-sec .frame-tall{width:100%;aspect-ratio:4/5;min-height:0;order:2;border-radius:14px;margin-bottom:28px}
+  .cakes-sec .intake{order:3;text-align:left}
+  .cakes-sec .form{max-width:none}
+  .cakes-sec .ctitle{font-size:32px}
+}
+
+/* CAKE depth parallax — compositor-driven (survives iOS Low Power Mode).
+   Each image drifts within its overflow:hidden frame as the section passes
+   through the viewport. Scale is baked into both keyframes so the frame edge
+   never shows. -5%→+5% / -2.3%→+2.3% match the JS amps (5 / 2.3). */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .cakes-sec .frame-top{view-timeline:--cake-top-tl block}
+    .cakes-sec .frame-tall{view-timeline:--cake-tall-tl block}
+    .cakes-sec .frame-top .cake-img{
+      animation:cake-top linear both;
+      animation-timeline:--cake-top-tl;
+      animation-range:cover 0% cover 100%;
+    }
+    .cakes-sec .frame-tall .cake-img{
+      animation:cake-tall linear both;
+      animation-timeline:--cake-tall-tl;
+      animation-range:cover 0% cover 100%;
+    }
+    @keyframes cake-top{
+      from{transform:translate3d(0,-5%,0) scale(1.12)}
+      to{transform:translate3d(0,5%,0) scale(1.12)}
+    }
+    @keyframes cake-tall{
+      from{transform:translate3d(0,-2.3%,0) scale(1.05)}
+      to{transform:translate3d(0,2.3%,0) scale(1.05)}
+    }
+  }
+}
+
+/* ============================================================
+   8 · VISIT + FAQ  (.visit)
+   (body overflow-x:hidden from the wireframe intentionally dropped)
+   ============================================================ */
+.visit{padding:130px 0 150px}
+.visit .container{max-width:1240px;margin:0 auto;padding:0 64px}
+.visit .visit-grid{display:grid;grid-template-columns:.82fr 1.18fr;gap:80px;align-items:start}
+.visit .eyebrow{font-family:var(--sans-display);font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--caramel);font-weight:600;margin-bottom:14px;display:block}
+.visit .visit-title{font-family:var(--serif);font-size:46px;line-height:1.02;margin-bottom:30px}
+.visit .visit-side{position:relative}
+.visit .visit-panel{position:relative;margin-left:calc((50vw - 50%) * -1);
+  background:var(--pine);color:var(--cream);border-radius:0 18px 18px 0;
+  padding:38px 40px 38px calc((50vw - 50%) + 0px);box-shadow:0 18px 44px rgba(46,74,56,.18)}
+.visit .vp-row{padding:18px 0;border-bottom:1px solid var(--line-pine)}
+.visit .vp-row:first-child{padding-top:0}
+.visit .vp-k{font-family:var(--sans-display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);margin-bottom:7px}
+.visit .vp-v{font-family:var(--serif);font-weight:600;font-size:21px;line-height:1.3}
+.visit .vp-v small{display:block;font-family:var(--sans);font-weight:400;font-size:13.5px;color:rgba(244,240,230,.72);margin-top:5px;letter-spacing:.01em}
+.visit .btn-pine{display:inline-flex;align-items:center;gap:10px;margin-top:26px;font-family:var(--sans-display);font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;
+  color:var(--pine);background:var(--cream);border-radius:8px;padding:14px 26px;text-decoration:none}
+.visit .btn-pine .arr{transition:transform .3s}.visit .btn-pine:hover .arr{transform:translateX(4px)}
+.visit .faq h3{font-family:var(--serif);font-size:26px;margin-bottom:14px}
+.visit .faq-item{border-bottom:1px solid var(--line)}
+.visit .faq-q{width:100%;text-align:left;background:none;border:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:18px;
+  padding:20px 0;font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.3;color:var(--ink)}
+.visit .faq-q .ic{position:relative;width:14px;height:14px;flex:none}
+.visit .faq-q .ic::before,.visit .faq-q .ic::after{content:"";position:absolute;background:var(--caramel);transition:transform .3s var(--ease)}
+.visit .faq-q .ic::before{left:0;top:6px;width:14px;height:2px}
+.visit .faq-q .ic::after{left:6px;top:0;width:2px;height:14px}
+.visit .faq-q[aria-expanded="true"] .ic::after{transform:scaleY(0)}
+.visit .faq-a{overflow:hidden;max-height:0;transition:max-height .4s var(--ease)}
+.visit .faq-a-inner{padding:0 0 22px;font-family:var(--sans);font-size:15px;line-height:1.6;color:#5d584c;max-width:54ch}
+.visit .cottage{margin-top:48px;display:grid;gap:6px;max-width:60ch}
+.visit .cottage .ct{font-family:var(--sans-display);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--caramel);font-weight:600}
+.visit .cottage p{font-family:var(--sans);font-size:13px;line-height:1.6;color:#8a8474}
+@media(max-width:860px){
+  .visit .container{padding:0 22px}
+  .visit{padding:70px 0 84px}
+  .visit .visit-grid{grid-template-columns:1fr;gap:48px}
+  .visit .visit-title{font-size:34px}
+  .visit .visit-panel{position:static;left:auto;width:88%;margin-left:-22px;border-radius:0 16px 16px 0;padding:30px 26px}
+}
+
+/* ============================================================
+   9 · FOOTER  (.footer)
+   ============================================================ */
+/* Crumblr two-curtain close: footer base is cream (flush with the section
+   above — no seam), two pine panels close vertically over it as you reach the
+   bottom, and the text resolves to full opacity as they meet in the middle. */
+#footerfloor{position:fixed;left:0;right:0;bottom:0;height:calc(env(safe-area-inset-bottom,0px) + 16px);background:var(--pine);z-index:6;opacity:0;pointer-events:none;transition:opacity .18s linear}  /* footer-only pine backstop: fades in as the footer fills so the bottom safe-strip reads pine, never the paper sliver. opacity driven in JS by curtain progress. */
+.footer{position:relative;margin-top:-8px;min-height:calc(100vh + 8px);display:flex;flex-direction:column;justify-content:center;background:var(--paper);color:var(--cream);padding:84px 64px 54px;text-align:center;overflow:hidden}
+.footer .curtain{position:absolute;left:-1px;right:-1px;height:58%;background:var(--pine);z-index:1;backface-visibility:hidden;will-change:transform}
+.footer .curtain-top{top:-2px;transform:translate3d(0,-100%,0)}
+.footer .curtain-bottom{bottom:-2px;transform:translate3d(0,100%,0)}
+.footer .f-inner{position:relative;z-index:2;max-width:1080px;margin:0 auto;width:100%;opacity:.06}
+
+/* FOOTER curtain close — compositor-driven (survives iOS Low Power Mode).
+   Footer is taller than the viewport (min-height:100vh+8px), so its visibility
+   is the ENTRY phase: from footer-bottom-enters-viewport-bottom to
+   footer-top-reaches-viewport-top. Panels must be fully closed (tY=0) by the
+   end of entry = the moment the footer fills the screen. .f-inner resolves a
+   touch behind. #footerfloor backstop stays on JS (fixed element). */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion: no-preference){
+    .footer{view-timeline:--foot block}
+    .footer .curtain-top{
+      animation:foot-top linear both;
+      animation-timeline:--foot;
+      animation-range:entry 10% entry 95%;
+    }
+    .footer .curtain-bottom{
+      animation:foot-bot linear both;
+      animation-timeline:--foot;
+      animation-range:entry 10% entry 95%;
+    }
+    .footer .f-inner{
+      animation:foot-inner linear both;
+      animation-timeline:--foot;
+      animation-range:entry 35% entry 90%;
+    }
+    @keyframes foot-top{from{transform:translate3d(0,-100%,0)}to{transform:translate3d(0,0,0)}}
+    @keyframes foot-bot{from{transform:translate3d(0,100%,0)}to{transform:translate3d(0,0,0)}}
+    @keyframes foot-inner{from{opacity:.06}to{opacity:1}}
+  }
+}
+.footer .tagline{font-family:var(--sans-display);font-size:12.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--sage);font-weight:600;margin-bottom:24px}
+.footer .wordmark{font-family:var(--serif);font-size:clamp(76px,13vw,150px);line-height:.92;color:var(--cream);letter-spacing:-.01em}
+.footer .wordmark em{font-style:italic;font-weight:400}
+.footer .gratitude{font-family:var(--script);font-size:27px;line-height:1.35;color:var(--sage);max-width:24ch;margin:22px auto 0}
+.footer .cols{display:flex;justify-content:center;gap:80px;flex-wrap:wrap;margin:64px 0 56px;text-align:center}
+.footer .col .ck{font-family:var(--sans-display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);font-weight:600;margin-bottom:16px}
+.footer .col a{display:block;font-family:var(--serif);font-size:18px;color:var(--cream);text-decoration:none;margin-bottom:10px;opacity:.9;transition:opacity .2s}
+.footer .col a:hover{opacity:1}
+.footer .socials{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.footer .socials a{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid rgba(188,220,180,.45);border-radius:50%;color:var(--cream);opacity:.92;text-decoration:none;transition:opacity .2s,border-color .2s,transform .2s}
+.footer .socials a:hover{opacity:1;border-color:var(--sage);transform:translateY(-2px)}
+.footer .socials svg{width:18px;height:18px}
+.footer .edition{margin-top:8px}
+.footer .edition .ek{font-family:var(--sans-display);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--sage);font-weight:600;margin-bottom:10px}
+.footer .edition .ev{font-family:var(--serif);font-size:18px;color:var(--cream);opacity:.9}
+.footer .f-bottom{border-top:1px solid rgba(244,240,230,.16);margin-top:54px;padding-top:26px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer .f-bottom .cpy,.footer .f-bottom .benji{font-family:var(--sans);font-size:12.5px;letter-spacing:.03em;color:rgba(244,240,230,.6)}
+.footer .f-bottom .benji em{font-family:var(--script);font-size:17px;font-style:normal;color:var(--sage)}
+@media(max-width:760px){
+  /* footer fills exactly one dynamic viewport and centers its content (balanced pine top/bottom, no dead gap, no over-scroll) */
+  .footer{min-height:100dvh;padding:24px 24px calc(24px + env(safe-area-inset-bottom,0px));justify-content:center}
+  .footer .wordmark{font-size:clamp(64px,20vw,96px)}
+  .footer .tagline{margin-bottom:14px}                 /* tighten eyebrow→wordmark */
+  .footer .gratitude{margin-top:14px}                  /* tighten wordmark→gratitude */
+  .footer .cols{gap:30px;margin:30px 0 22px}           /* pull the three link groups closer + in */
+  .footer .col .ck{margin-bottom:10px}
+  .footer .col a{margin-bottom:6px}
+  .footer .edition{margin-top:4px}
+  .footer .f-bottom{margin-top:28px;padding-top:18px;justify-content:center;text-align:center;flex-direction:column;gap:8px}  /* lift divider + copyright up */
+}
+
+/* ============================================================
+   REDUCED MOTION — collapse motion gracefully
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .menu-sec .seal{animation:none}
+  .ticker-track{animation:none;display:flex;justify-content:center;align-items:center;width:100%}   /* static: center the single phrase WITH its flanking suns (display:flex so width/centering apply) */
+  /* reduced motion only: tighten the flanking suns so both stay inside portrait width (base ticker keeps its 26px) */
+  .ticker-track .sun{padding:0 14px}
+  .gal .pol{opacity:1 !important;transition:none}
+  .menu-sec .m-head{opacity:1;transform:none}
+  .menu-sec .group{opacity:1;transform:none}
+  .menu-sec .seal-wrap{opacity:1}
+  .about .member{opacity:1;transform:none;transition:none}
+  .about .copy-col{transform:none}
+  .about .photo{transform:none !important}
+  .love .pl-item{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- boot / load animation: words converge into a stack, then pine panels open to reveal the hero -->
+<div id="boot" aria-hidden="true">
+  <div class="boot-panel boot-top"></div>
+  <div class="boot-panel boot-bottom"></div>
+  <div class="boot-words">
+    <div class="bw-line"><span class="bw" data-w="make">Make</span> <span class="bw" data-w="your">Your</span> <span class="bw" data-w="day">Day</span></div>
+    <div class="bw-line"><span class="bw" data-w="a">A</span> <span class="bw" data-w="bit">Bit</span></div>
+    <div class="bw-line"><span class="bw" data-w="better">Better</span></div>
+  </div>
+</div>
+
+<!-- custom ring cursor (hero only, pointer devices) -->
+<div id="cursor" aria-hidden="true"></div>
+
+<!-- nav-tab transition: two pine panels close to meet, jump to the section, then open -->
+<div id="navcurtain" aria-hidden="true"><div class="nc-top"></div><div class="nc-bottom"></div></div>
+
+<!-- all scrolling sections ride in .page; the footer sits fixed behind and is
+     revealed as .page lifts away at the very bottom (curtain close) -->
+<div class="page">
+
+<!-- ============================================================
+     1 · HERO  (canonical nav lives here)
+     ============================================================ -->
+<section class="hero" id="top">
+  <div class="hero-type">
+    <div class="body">
+      <h1 class="wordmark"><span class="lb">Little Bit</span><span class="bk">BAKERY</span></h1>
+      <div class="count">
+        <span class="cl">Going to press</span>
+        <span class="ct" id="cd">2D : 11H : 35M</span>
+        <span class="cs">Saturday &middot; 8:00 AM &middot; till sold out</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-photo">
+    <img class="hero-img" src="LBBphotos/lbbstock3editcompressed.webp" alt="Warm golden cinnamon rolls from Little Bit Bakery" loading="eager" decoding="sync" fetchpriority="high">
+  </div>
+  <nav class="nav">
+    <div class="tabs"><a href="#menu">Menu</a><a href="#about">About</a><a href="#visit">Contact</a></div>
+    <a class="cta" href="https://hotplate.com/littlebitbakery" target="_blank" rel="noopener">Preorder <span class="arr">&rarr;</span></a>
+  </nav>
+</section>
+
+<!-- ============================================================
+     1.5 · APPRECIATION  (sage; pins and lights up word-by-word on scroll)
+     ============================================================ -->
+<section class="appreciation" id="appreciation">
+  <div class="appreciation-pin">
+    <svg class="sunrise" viewBox="0 0 80 44" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+      <line x1="6" y1="38" x2="74" y2="38"/>
+      <path d="M24 38a16 16 0 0 1 32 0"/>
+      <line x1="40" y1="14" x2="40" y2="6"/>
+      <line x1="22" y1="20" x2="16" y2="15"/>
+      <line x1="58" y1="20" x2="64" y2="15"/>
+      <line x1="11" y1="31" x2="4" y2="29"/>
+      <line x1="69" y1="31" x2="76" y2="29"/>
+    </svg>
+    <div class="appreciation-copy" id="apprCopy">
+      <p class="appr-line">I get to do this. I don't take a single Saturday for granted.</p>
+      <p class="appr-line">Thank you for letting a little porch bakery be part of your week, for showing up early, for the kind words, for all of it.</p>
+      <p class="appr-line appr-script">All glory to Christ</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     2 · HOW SATURDAY WORKS
+     ============================================================ -->
+<section class="hsec" id="hsec">
+  <div class="sticky">
+    <div class="intro">
+      <span class="sectkr">The Ritual · How Saturday works</span>
+    </div>
+
+    <div class="track" id="track">
+      <!-- STEP 1 -->
+      <div class="panel">
+        <span class="bgnum">01</span>
+        <div class="pinner">
+          <span class="kicker">The List Goes Up</span>
+          <h2 class="ptitle">The week's bake gets posted</h2>
+          <p class="pbody">Every Sunday I share what I'm baking on socials and the Hotplate store, so you know what'll be on the porch come Saturday.</p>
+        </div>
+      </div>
+      <!-- STEP 2 -->
+      <div class="panel">
+        <span class="bgnum">02</span>
+        <div class="pinner">
+          <span class="kicker">Claim Your Bag</span>
+          <h2 class="ptitle">Preorders open on Hotplate</h2>
+          <p class="pbody">Orders go live Sunday at 5pm and tend to sell out fast. The sourdough and the cinnamon rolls go first, all baked to order, a little bit at a time.</p>
+        </div>
+      </div>
+      <!-- STEP 3 -->
+      <div class="panel">
+        <span class="bgnum">03</span>
+        <div class="pinner">
+          <span class="kicker">Saturday · 8:00 AM</span>
+          <h2 class="ptitle">It goes out on the porch</h2>
+          <p class="pbody">The porch opens at 8 AM. Preordered bags are labeled and set out, ready to grab and go. No order? Come by and grab what's left while it lasts.</p>
+        </div>
+      </div>
+      <!-- STEP 4 -->
+      <div class="panel">
+        <span class="bgnum">04</span>
+        <div class="pinner">
+          <span class="kicker">By Mid-Morning</span>
+          <h2 class="ptitle">When it's gone, it's gone</h2>
+          <p class="pbody">Most Saturdays it's sold out well before nine. When the last loaf leaves the porch, the week is done, and I start again.</p>
+        </div>
+      </div>
+      <!-- STEP 5 — CTA -->
+      <div class="panel cta-panel">
+        <span class="bgnum">05</span>
+        <div class="pinner">
+          <span class="kicker" style="display:block;text-align:center">Don't miss the next one</span>
+          <h2 class="ctatitle">Get on next week's list.</h2>
+          <p class="ctasub">A little note every Sunday when the new menu goes up, so you're first to the porch.</p>
+          <a class="cta-btn" href="https://hotplate.com/littlebitbakery" target="_blank" rel="noopener">Join the list <span class="arr">→</span></a>
+        </div>
+      </div>
+    </div>
+
+    <span class="plabel" id="plabel">Step 1 of 5</span>
+    <div class="pbar"><div class="fill" id="fill"></div></div>
+    <span class="pcount">Sun → Sat</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     3 · MENU  (rides in .menu-stage: pins/holds at its end on desktop
+     so About can rise up and cover it)
+     ============================================================ -->
+<div class="menu-stage">
+<section class="menu-sec" id="menu">
+  <div class="m-head">
+    <span class="date">Saturday &middot; June 6</span>
+    <h2 class="title">This Week's <em>Lineup</em></h2>
+    <p class="m-note">Preorder only this week! Pickup 8a&ndash;12p</p>
+  </div>
+  <div class="m-grid">
+    <div class="col-left">
+      <div class="group" data-reveal="2">
+        <div class="gtitle">Sweet Treats</div>
+        <div class="grule"></div>
+        <div class="item">
+          <div class="iname"><span class="t">Oatmeal Cream Pie Cookies (x2)</span><span class="dots"></span><span class="pr">$12</span></div>
+        </div>
+        <div class="item">
+          <div class="iname"><span class="t">&frac14; lb Chocolate Chip Cookies (x4)</span><span class="dots"></span><span class="pr">$20</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-right">
+      <div class="group" data-reveal="1">
+        <div class="gtitle">Breads</div>
+        <div class="grule"></div>
+        <div class="item">
+          <div class="iname"><span class="t">Classic Sourdough Bread</span><span class="dots"></span><span class="pr">$12</span></div>
+        </div>
+        <div class="item">
+          <div class="iname"><span class="t">Lemon Blueberry Sourdough Loaf</span><span class="dots"></span><span class="pr">$14</span></div>
+        </div>
+        <div class="item">
+          <div class="iname"><span class="t">Jalape&ntilde;o Cheddar Sourdough Loaf</span><span class="dots"></span><span class="pr">$13</span></div>
+        </div>
+        <div class="item">
+          <div class="iname"><span class="t">Sourdough English Muffins (x4)</span><span class="dots"></span><span class="pr">$8</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="seal-wrap">
+    <div class="seal">
+      <svg viewBox="0 0 156 156">
+        <defs><path id="circ" d="M 78,78 m -60,0 a 60,60 0 1,1 120,0 a 60,60 0 1,1 -120,0"/></defs>
+        <text><textPath href="#circ" startOffset="0">LITTLE BIT BAKERY &middot; BAKED FRESH &middot; FRISCO, TEXAS &middot; </textPath></text>
+      </svg>
+    </div>
+  </div>
+</section>
+<div class="menu-hold" aria-hidden="true"></div>
+</div><!-- /.menu-stage -->
+
+<!-- ============================================================
+     4 · ABOUT / MY STORY  (rides in .about-stage: pins at its end so the
+     Gallery can rise up and cover it — second cover-reveal)
+     ============================================================ -->
+<div class="about-stage">
+<section class="about" id="about">
+  <div class="about-inner">
+    <span class="kicker">My Story &middot; Frisco, Texas</span>
+    <div class="grid">
+
+      <div class="copy-col">
+        <h2 class="lede">Welcome to Little Bit Bakery. I'm Angela, <span class="hl">owner and head baker.</span></h2>
+        <div class="body">
+          <p>I always wanted to bake but never had the chance to go all in. When the pandemic hit in 2020, I finally had my excuse. I started having fun, so I got a little starter baking set, and just&hellip; never stopped.</p>
+          <p>In September 2025 I opened the porch bakery, hoping to share what I make with more people around me. With the sweetest community it's grown into so much more than I could have ever dreamed of.</p>
+          <p>So now every Saturday at 8am the porch opens, stocked with breads, pastries, and treats. It's here to bring a little community together, and hopefully make your day a little bit better (:</p>
+        </div>
+      </div>
+
+      <div class="photo-col">
+        <div class="photo-frame">
+          <img class="photo" id="parphoto" src="LBBphotos/50k2edit2compressed.webp" alt="Angela smiling with the 50k milestone cookie">
+          <span class="ph-cap">In the kitchen</span>
+        </div>
+      </div>
+
+      <div class="crew-col">
+        <div class="crew-head">
+          <div class="ct">The Crew</div>
+          <div class="cs">(yes, they have names)</div>
+        </div>
+        <div class="crew" id="crew">
+          <div class="member"><span class="m-tag">Mixer</span><div class="m-name">R2-Dough2</div><div class="m-role">the big mixer &middot; my biggest splurge yet</div></div>
+          <div class="member"><span class="m-tag">Mixer II</span><div class="m-name">Goose</div><div class="m-role">mixer number two &middot; pulls the night shift</div></div>
+          <div class="member"><span class="m-tag">Oven</span><div class="m-name">Gordon</div><div class="m-role">the oven &middot; runs hot, never complains</div></div>
+          <div class="member"><span class="m-tag">Starter</span><div class="m-name">Doughbert</div><div class="m-role">the sourdough starter &middot; older than the business</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<div class="about-hold" aria-hidden="true"></div>
+</div><!-- /.about-stage -->
+
+<!-- ============================================================
+     5 · GALLERY / THE GOOD STUFF  (.gal-wrap rises full-width to cover About)
+     ============================================================ -->
+<section class="gal-wrap">
+  <div class="gal" id="gal">
+  <div class="g-head">
+    <h2 class="title">The Good Stuff</h2>
+    <p class="sub">Shots from the porch and inside the Little Bit kitchen.</p>
+  </div>
+
+  <div class="field" id="field">
+    <div class="pol p1" data-i="0" data-rot="-6" data-depth="34"><div class="inner"><img class="ph" src="LBBphotos/cart1compressed.webp" alt="The Little Bit cart before the rush"></div><span class="cap">before the rush</span><span class="num">&#8470; 01</span></div>
+    <div class="pol p2" data-i="1" data-rot="4"  data-depth="52"><div class="inner"><img class="ph" src="LBBphotos/gordon1editcompressed.webp" alt="Fresh bread out of the oven"></div><span class="cap">out of Gordon</span><span class="num">&#8470; 02</span></div>
+    <div class="pol p3" data-i="2" data-rot="5"  data-depth="40"><div class="inner"><img class="ph" src="LBBphotos/frostedcompressed.webp" alt="Freshly frosted treats"></div><span class="cap">frosted</span><span class="num">&#8470; 03</span></div>
+    <div class="pol p4" data-i="3" data-rot="-7" data-depth="58"><div class="inner"><img class="ph" src="LBBphotos/doughbertcompressed.webp" alt="Doughbert, the sourdough starter"></div><span class="cap">Doughbert</span><span class="num">&#8470; 04</span></div>
+    <div class="pol p5" data-i="4" data-rot="-4" data-depth="44"><div class="inner"><img class="ph" src="LBBphotos/choc2compressed.webp" alt="Cookies bagged up for pickup"></div><span class="cap">bagged up</span><span class="num">&#8470; 05</span></div>
+    <div class="pol p6" data-i="5" data-rot="3"  data-depth="48"><div class="inner"><img class="ph" src="LBBphotos/cart4editcompressed.webp" alt="The porch at 8 a.m."></div><span class="cap">8 a.m.</span><span class="num">&#8470; 06</span></div>
+  </div>
+
+  <div class="follow">
+    <a href="https://instagram.com/littlebitcakes" target="_blank" rel="noopener"><span>Follow along</span> <span class="h">@littlebitcakes</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="var(--caramel)" stroke="none"/></svg>
+    </a>
+  </div>
+
+  </div><!-- /.gal -->
+</section>
+
+<!-- full-bleed ticker — the section break into Love -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<!-- ============================================================
+     6 · A LITTLE LOVE LATELY
+     ============================================================ -->
+<section class="love" id="love">
+  <span class="eyebrow">A Little Love Lately</span>
+  <h2 class="lede">Turns out a lot of folks get up early for this.</h2>
+
+  <div class="feature">
+    <div class="stat-kicker">by the numbers</div>
+    <div class="stats">
+      <div class="stat"><div class="num" data-to="100"><span class="val">0</span>K<span class="plus">+</span></div><div class="lab">Instagram followers</div></div>
+      <div class="stat"><div class="num" data-to="750"><span class="val">0</span>K<span class="plus">+</span></div><div class="lab">TikTok likes</div></div>
+    </div>
+    <div class="kelly">
+      <span class="kk">thank you, truly</span>
+      <p>It's been a wild year. I got to share what I do on <a href="#">the Kelly Clarkson Show</a> and on <a href="#">local DFW news</a>, while the porch line just keeps getting longer. Still a little surreal. I'm just grateful y'all keep coming back.</p>
+    </div>
+  </div>
+
+  <h3 class="crit-head">A few critiques</h3>
+  <div class="reviews" id="reviews">
+    <div class="review"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="q">"These cookies were amazing!"</div><div class="by"><b>Arya K.</b><span>&frac14;lb White Chocolate Biscoff Cookies (4-pack)</span></div></div>
+    <div class="review"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="q">"So delicious!!"</div><div class="by"><b>Sally M.</b><span>Cinnamon Rolls (3-pack)</span></div></div>
+    <div class="review"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="q">"Best cookies I've ever had!"</div><div class="by"><b>Bee P.</b><span>&frac14;lb White Chocolate Biscoff Cookies (4-pack)</span></div></div>
+  </div>
+  <div class="review-dots" id="reviewDots" aria-hidden="true"></div>
+
+  <div class="press">
+    <div class="press-photo">
+      <div class="polaroid"><img class="ph" src="LBBphotos/kellyclarkeditcompressed.webp" alt="Angela on the Kelly Clarkson Show"><span class="cap">on the show<small>Kelly Clarkson &middot; Mar 2026</small></span></div>
+    </div>
+    <div class="press-body">
+      <span class="pk">As seen on</span>
+      <div class="press-list">The Kelly Clarkson Show</div>
+      <p class="oven">In March 2026, I joined The Kelly Clarkson Show's "What I Like" segment, where Kelly surprised me with a donation toward a professional bread oven. I'm not too proud to say I teared up. It still doesn't feel quite real.</p>
+    </div>
+  </div>
+
+  <div class="presslogos">
+    <span class="pl-label">Featured in</span>
+    <div class="pl-row" id="plRow">
+      <span class="pl-logo pl-item" style="--logo:url('presslogos/localprofiletransparent.png')" role="img" aria-label="Local Profile"></span>
+      <span class="pl-logo pl-item" style="--logo:url('presslogos/SLMtexttransparent.png?v=2')" role="img" aria-label="Star Local Media"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     7 · CUSTOM CAKES
+     ============================================================ -->
+<section class="cakes-sec" id="cakes">
+  <div class="card">
+    <div class="card-inner">
+      <div class="cake-frame frame-top"><img class="cake-img" id="cakeTop" src="LBBphotos/customcakestock2compressed.webp" alt="A custom cake by Little Bit Bakery"></div>
+      <div class="lower">
+        <div class="intake">
+          <span class="paused-note">Currently Paused</span>
+          <h2 class="ctitle">Custom cakes</h2>
+          <p class="cbody">Custom orders are paused while I focus on the weekly drops, but the door isn't closed. If you've got a wedding, a birthday, or a quiet Tuesday that needs cake, leave your details and I'll be in touch the moment bookings reopen.</p>
+          <form class="form" onsubmit="return false">
+            <input class="field" type="text" placeholder="Your name">
+            <div class="row2">
+              <input class="field" type="text" placeholder="Email or phone">
+              <input class="field" type="text" placeholder="Event date">
+            </div>
+            <textarea class="field" placeholder="Tell me about it"></textarea>
+            <button class="submit">Inquire by email <span class="arr">&rarr;</span></button>
+          </form>
+        </div>
+        <div class="cake-frame frame-tall"><img class="cake-img" id="cakeTall" src="LBBphotos/customcakestock5editcompressed.webp" alt="A floral custom cake with a sage band"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     8 · VISIT + FAQ
+     ============================================================ -->
+<section class="visit" id="visit">
+  <div class="container">
+    <div class="visit-grid">
+
+      <div class="visit-side">
+        <span class="eyebrow">Come visit</span>
+        <h2 class="visit-title">Find the porch</h2>
+        <div class="visit-panel">
+          <div class="vp-row"><div class="vp-k">Where</div><div class="vp-v">Frisco, Texas<small>Exact address shared with your preorder.</small></div></div>
+          <div class="vp-row"><div class="vp-k">When</div><div class="vp-v">Saturdays from 8am<small>Until sold out, usually by nine.</small></div></div>
+          <div class="vp-row"><div class="vp-k">Preorders</div><div class="vp-v">Sundays at 5pm<small>Opens the Sunday before each porch day, on Hotplate.</small></div></div>
+          <a class="btn-pine" href="https://hotplate.com/littlebitbakery" target="_blank" rel="noopener">Preorder on Hotplate <span class="arr">&rarr;</span></a>
+        </div>
+      </div>
+
+      <div class="faq">
+        <h3>Frequently Asked Questions</h3>
+        <div class="faq-list">
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">How does the porch bakery work?<span class="ic"></span></button><div class="faq-a"><div class="faq-a-inner">I offer preorders (until inventory sells out) that you can pick up the day of the porch bakery, so you don't have to wait in line. If you don't preorder, I keep the bakery cart stocked for walk-up purchases too, first come, first served.</div></div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">What day &amp; time is the porch bakery?<span class="ic"></span></button><div class="faq-a"><div class="faq-a-inner">Saturdays at 8am, until it sells out (usually by 9). If I ever take a week off, I'll post it on Instagram and you'll see it up top here, so it's worth a quick check before you head over.</div></div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">What payment options do you have?<span class="ic"></span></button><div class="faq-a"><div class="faq-a-inner">I take cash, Venmo, and Zelle at the cart for walk-up purchases.</div></div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">How do I preorder?<span class="ic"></span></button><div class="faq-a"><div class="faq-a-inner">My preorder link is through Hotplate, it's the Preorder button up top. I open preorders the Sunday before a porch bakery, at 5pm.</div></div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">What if I don't pick up my preorder?<span class="ic"></span></button><div class="faq-a"><div class="faq-a-inner">Because of the perishable nature of the product, if you don't pick up your preorder I won't be able to refund it. Don't worry though, I give you plenty of reminders to come pick up!</div></div></div>
+          <div class="faq-item"><button class="faq-q" aria-expanded="false">Do you deliver?<span class="ic"></span></button><div class="faq-a"><div class="faq-a-inner">Unfortunately I don't offer delivery for my porch bakery items, everything is pickup at the porch.</div></div></div>
+        </div>
+
+        <div class="cottage">
+          <span class="ct">Texas Cottage Food Law</span>
+          <p>This product was produced in a private residence that is not subject to governmental licensing or inspection. Made and sold under the Texas Cottage Food Production Operations Act (Texas Health and Safety Code &sect;437).</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+</div><!-- /.page -->
+
+<!-- ============================================================
+     9 · FOOTER  (fixed behind .page — curtain reveal)
+     ============================================================ -->
+<footer class="footer">
+  <div class="curtain curtain-top" aria-hidden="true"></div>
+  <div class="curtain curtain-bottom" aria-hidden="true"></div>
+  <div class="f-inner">
+    <div class="tagline">Make your day a little bit better</div>
+    <div class="wordmark">Little Bit</div>
+    <p class="gratitude">We appreciate you on this journey. See you Saturday morning on the porch.</p>
+
+    <div class="cols">
+      <div class="col">
+        <div class="ck">The Bakery</div>
+        <a href="#menu">This Week's Board</a>
+        <a href="#about">My Story</a>
+      </div>
+      <div class="col">
+        <div class="ck">Order</div>
+        <a href="https://hotplate.com/littlebitbakery" target="_blank" rel="noopener">Hotplate Storefront</a>
+      </div>
+      <div class="col">
+        <div class="ck">Follow Along</div>
+        <div class="socials">
+          <a href="https://instagram.com/littlebitcakes" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@little.bit.bakery" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.3 2 1.5 3.6 3.5 3.9v2.6c-1.3.1-2.5-.3-3.5-1v6.4c0 3.2-2.4 5.6-5.5 5.6S5.5 18.1 5.5 15s2.6-5.4 5.6-5.1v2.7c-.3-.1-.7-.2-1-.2-1.4 0-2.5 1.2-2.5 2.6s1.1 2.6 2.5 2.6 2.6-1.1 2.6-2.7V3h3.3z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/littlebitcakes" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9h2.5l.5-3H14V4.3c0-.9.3-1.5 1.6-1.5H17V.1C16.7.1 15.7 0 14.6 0 12.2 0 10.7 1.4 10.7 4v2H8v3h2.7v8H14V9z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/@LittleBitBakery" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 7.3a3 3 0 0 0-2.1-2.1C19.5 4.7 12 4.7 12 4.7s-7.5 0-9.4.5A3 3 0 0 0 .5 7.3 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 4.7 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-4.7zM9.6 15.5v-7l6.1 3.5z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="f-bottom">
+      <span class="cpy">&copy; 2026 Little Bit Bakery &middot; Frisco, Texas</span>
+      <span class="benji">concept by benji</span>
+    </div>
+  </div>
+</footer>
+<div id="footerfloor" aria-hidden="true"></div>
+
+<script src="lenis.min.js"></script>
+<script>
+/* ============================================================
+   LITTLE BIT BAKERY — behavior
+   ONE rAF loop drives Lenis AND every scroll-linked animation
+   (read the eased scroll position straight off Lenis, never the
+   scroll event). Per frame: all READS first, then all WRITES, so
+   we never thrash layout. Section offsets are cached (recomputed
+   on resize), not measured every frame. Discrete reveals use
+   IntersectionObserver so they fire reliably regardless of scroll
+   speed/mechanism. Concept by benji.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var DESKTOP = function () { return window.matchMedia('(min-width:861px)').matches; };
+
+  /* ---------- refresh always returns to the TOP (so the boot animation reveals
+       the hero with the user at the top, never dropped mid-page). Disable the
+       browser's scroll restoration and force 0 before Lenis reads the position. ---------- */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+  window.addEventListener('load', function () { window.scrollTo(0, 0); if (lenis) lenis.scrollTo(0, { immediate: true }); });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) { window.scrollTo(0, 0); if (lenis) lenis.scrollTo(0, { immediate: true }); } });
+
+  /* ---------- Lenis ---------- */
+  var lenis = null;
+  if (!REDUCED && typeof Lenis !== 'undefined') {
+    lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 1, smoothWheel: true, smoothTouch: false });
+    window.lenis = lenis;
+  }
+
+  /* ---------- chrome re-sample: AFTER an overlay (boot / nav curtain) fully exits,
+       force Safari to re-sample the live page so its top/bottom chrome doesn't stay
+       stuck on the overlay's pine. Net-zero — always returns to exactly where it was.
+
+       WHY THE REWRITE (the LBB-specific bug): the old version did the nudge with
+       native window.scrollBy/scrollTo. But this site runs Lenis, whose rAF loop
+       WRITES the scroll position from its own internal target every single frame.
+       So a native scrollBy(0,1) gets overwritten by Lenis the very next frame —
+       often before Safari ever samples it. That's why the resample was a coin-flip
+       on refresh (and why the *identical* native nudge was rock-solid on the TFS
+       site, which had no smooth-scroll library fighting it). FIX: drive the trip
+       THROUGH Lenis (lenis.scrollTo(..., {immediate, force})) so Lenis's own target
+       follows the trip and nothing fights it, and HOLD the out-position for two
+       frames (one frame is often too brief for iOS to re-evaluate its chrome). The
+       trip is +2px and returns to the exact start y, so it's imperceptible and can
+       never cause a jump. Works for both the boot exit (y at the very top) and the
+       Menu/About curtain exits (mid-page). ---------- */
+  let _chromeResampleTimer = 0, _crRaf1 = 0, _crRaf2 = 0;
+  function _crCancelRaf(){
+    if(_crRaf1){ cancelAnimationFrame(_crRaf1); _crRaf1 = 0; }
+    if(_crRaf2){ cancelAnimationFrame(_crRaf2); _crRaf2 = 0; }
+  }
+  function scheduleChromeResample(delay){
+    // NO-OP (intentionally). We tried two scroll-nudge variants to force iOS Safari
+    // to re-sample its top/bottom chrome after the pine boot/curtain overlays exit.
+    // Result on a real iPhone: the programmatic scroll does NOT make Safari
+    // re-evaluate the chrome (it only re-samples on genuine user-gesture scroll), so
+    // the chrome stays pine — while the nudge itself was visible as a slight page
+    // jump on load and after each nav. Since it can't fix the chrome and only adds a
+    // jump, it does nothing now. The stuck-pine chrome needs a STRUCTURAL fix
+    // (keeping pine out of the safe-area sample zones), not a JS nudge — see notes.
+    void delay;
+  }
+
+  /* ---------- BOOT / LOAD ANIMATION (follows Choreography1/2) ---------- */
+  (function () {
+    var boot = document.getElementById('boot');
+    if (!boot) return;
+    if (REDUCED) { document.body.classList.add('hero-in'); if (boot.parentNode) boot.parentNode.removeChild(boot); scheduleChromeResample(140); return; } // skip — hero shown directly
+    document.documentElement.style.overflow = 'hidden';
+    if (lenis) lenis.stop();
+    requestAnimationFrame(function () { requestAnimationFrame(function () { boot.classList.add('go'); }); }); // converge
+
+    var SETTLE = 1150, HOLD = 600, OPEN = 900;
+    function startTimeline(){                                                        // timing UNCHANGED once it begins
+      window.scrollTo(0, 0);                                                          // ROLLBACK(scroll-restore): hard top before the reveal so a restored/drifted position can't show
+      setTimeout(function () { boot.classList.add('open'); document.body.classList.add('hero-in'); }, SETTLE + HOLD);          // panels open + trigger hero type
+      setTimeout(function () {
+        if (boot.parentNode) boot.parentNode.removeChild(boot);
+        document.documentElement.style.overflow = '';
+        if (lenis) lenis.start();
+        if (lenis) lenis.scrollTo(0, { immediate: true });                            // ROLLBACK(scroll-restore): Lenis can cache the pre-stop position; pin it to 0 on restart
+        scheduleChromeResample(140);
+      }, SETTLE + HOLD + OPEN);
+    }
+
+    // Gate the reveal behind the hero photo being decoded so the boot never opens onto a
+    // blank/undecoded hero (Safari would then sample the transparent fallback, not the photo).
+    // 1200ms max-timeout fallback so the boot can never hang if decode/load stalls.
+    var heroImg = document.querySelector('.hero-img');
+    if (!heroImg || heroImg.complete) { startTimeline(); }
+    else {
+      var started = false;
+      var begin = function () { if (started) return; started = true; startTimeline(); };
+      if (heroImg.decode) { heroImg.decode().then(begin).catch(begin); } else { heroImg.addEventListener('load', begin, { once: true }); }
+      heroImg.addEventListener('error', begin, { once: true });
+      setTimeout(begin, 1200);
+    }
+  })();
+
+  /* ---------- scroll-linked registry: read(y) -> data, then write(data,y) ---------- */
+  var readers = [], writers = [];
+  function onScroll(read, write) { readers.push(read); writers.push(write); }
+
+  var lastY = null;
+  function frame(time) {
+    if (lenis) lenis.raf(time);
+    var y = lenis ? lenis.animatedScroll : (window.scrollY || window.pageYOffset || 0);
+    if (y !== lastY) {
+      lastY = y;
+      var data = new Array(readers.length);
+      // isolate each handler so one bad frame can't freeze the whole scroll loop
+      for (var i = 0; i < readers.length; i++) { try { data[i] = readers[i](y); } catch (e) { data[i] = null; } }
+      for (var j = 0; j < writers.length; j++) { try { writers[j](data[j], y); } catch (e) { } }
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  // native fallback if Lenis is absent (reduced motion): still pump the loop on scroll
+  if (!lenis) window.addEventListener('scroll', function () { lastY = null; }, { passive: true });
+
+  /* ---------- cached layout metrics (recompute on resize / font load) ---------- */
+  var M = {};
+  function absTop(el) { var r = el.getBoundingClientRect(); return r.top + (window.scrollY || window.pageYOffset || 0); }
+  function measure() {
+    M.vh = window.innerHeight;
+    var hsec = document.getElementById('hsec'); if (hsec) { M.hsecTop = absTop(hsec); M.hsecH = hsec.offsetHeight; }
+    var _htrk = document.getElementById('track'); if (_htrk) { M.hsecTravel = (_htrk.offsetWidth - window.innerWidth) / window.innerWidth * 100; }   // vw to slide so the last panel lands in view — grows automatically with the --hgap pine gaps
+    var appr = document.getElementById('appreciation'); if (appr) { M.apprTop = absTop(appr); M.apprH = appr.offsetHeight; }
+    var about = document.getElementById('about'); if (about) { M.aboutTop = absTop(about); M.aboutH = about.offsetHeight; }
+    var cakes = document.getElementById('cakes'); if (cakes) { M.cakesTop = absTop(cakes); M.cakesH = cakes.offsetHeight; }
+    var footer = document.querySelector('.footer'); if (footer) { M.footerTop = absTop(footer); }
+    if (lenis) lenis.resize(); // keep Lenis's scroll limit in sync with layout changes
+    lastY = null; // force handlers to re-run with fresh metrics
+  }
+  var measureScheduled = false;
+  function scheduleMeasure() { if (measureScheduled) return; measureScheduled = true; requestAnimationFrame(function () { measureScheduled = false; measure(); }); }
+  var _measureW = window.innerWidth;
+  window.addEventListener('resize', function () { if (window.innerWidth === _measureW) return; _measureW = window.innerWidth; scheduleMeasure(); }, { passive: true });   // ignore mobile URL-bar height-only resizes — they were recomputing metrics mid-scroll and jumping the horizontal track
+
+  /* ---------- nav-tab transitions + anchor links ----------
+       Hero nav tabs: Menu & About play the curtain transition (panels close,
+       jump to the section behind them, panels open). Contact is INERT this round.
+       Every other in-page anchor (footer links, etc.) scrolls via Lenis. */
+  var navTabs = [].slice.call(document.querySelectorAll('.hero .nav .tabs a'));
+
+  var curtain = (function () {
+    var el = document.getElementById('navcurtain');
+    var busy = false;
+    function go(id) {
+      var target = document.getElementById(id);
+      if (!target) return;
+      if (REDUCED || !el) { if (lenis) lenis.scrollTo(target, { offset: 0 }); else target.scrollIntoView(); return; }
+      if (busy) return; busy = true;
+      el.classList.add('run');
+      requestAnimationFrame(function () { el.classList.add('closed'); });        // panels meet
+      setTimeout(function () {                                                   // fully closed: jump behind them
+        // PA (About first-nav flash): on a COLD load the very first nav to About lands on a
+        // sticky/.about-stage that has never been scrolled through, so its sticky geometry +
+        // the stage's negative-margin offset aren't resolved yet — the curtain then opened onto
+        // a mis-positioned/blank About. (Going hero->Menu->scroll->About works because scrolling
+        // through the region resolves that layout first.) FIX, all behind the still-closed opaque
+        // pine curtain so it's invisible and the curtain timing is unchanged: (1) refresh cached
+        // metrics + Lenis scroll-limit, (2) re-assert the target section's sticky top, (3) jump,
+        // (4) force a reflow so the sticky stage resolves AT the new scroll position, (5) re-issue
+        // the jump so it lands on the now-resolved offset. Then the existing two-frame wait opens
+        // the curtain onto a painted, correctly-placed destination.
+        if (typeof measure === 'function') measure();
+        if (!REDUCED && (target.id === 'menu' || target.id === 'about')) {
+          target.style.top = (window.innerHeight - target.offsetHeight) + 'px';   // same value setTops() uses; no-op for the already-warm Menu path
+        }
+        // land 3px past the section's flow-top so the section fully covers the viewport
+        // top — clears the previous section's bottom edge so no hairline shows above it
+        if (lenis) lenis.scrollTo(target, { immediate: true, offset: 3 }); else target.scrollIntoView();
+        void target.getBoundingClientRect();                                      // reflow → resolves the sticky/.about-stage geometry at the new pos
+        if (lenis) lenis.scrollTo(target, { immediate: true, offset: 3 });        // re-land on the resolved offset (still hidden behind the closed curtain)
+        // wait two frames (scroll applied + painted) so the destination is rendered behind the
+        // closed curtain BEFORE it opens — prevents the brief blank/white flash on Menu/About
+        requestAnimationFrame(function () { requestAnimationFrame(function () { el.classList.remove('closed'); }); });   // open at the section top
+        setTimeout(function () { el.classList.remove('run'); busy = false; scheduleChromeResample(100); }, 560);   // re-sample so chrome reflects the destination, not stale pine
+      }, 540);
+    }
+    return { go: go };
+  })();
+
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var href = a.getAttribute('href');
+      if (!href || href === '#') { e.preventDefault(); return; }
+      var id = href.slice(1);
+      if (navTabs.indexOf(a) !== -1) {                 // hero nav tabs handled specially
+        e.preventDefault();
+        if (id === 'visit') return;                    // Contact: inert (no scroll, no nav) this round
+        if (id === 'menu' || id === 'about') curtain.go(id);
+        return;
+      }
+      var el = id === 'top' ? document.body : document.getElementById(id);
+      if (!el) return;
+      if (lenis) { e.preventDefault(); lenis.scrollTo(id === 'top' ? 0 : el, { offset: 0 }); }
+    });
+  });
+
+  /* ============================================================
+     1 · HERO — countdown to next Saturday 8:00 AM
+     ============================================================ */
+  (function () {
+    function next8() {
+      var now = new Date(), d = new Date(now);
+      d.setHours(8, 0, 0, 0);
+      var day = d.getDay(), add = (6 - day + 7) % 7;
+      if (add === 0 && now > d) add = 7;
+      d.setDate(d.getDate() + add);
+      return d;
+    }
+    function tick() {
+      var el = document.getElementById('cd'); if (!el) return;
+      var diff = next8() - new Date();
+      if (diff <= 0) { el.textContent = 'On the porch now'; return; }
+      var dd = Math.floor(diff / 86400000), hh = Math.floor(diff / 3600000) % 24, mm = Math.floor(diff / 60000) % 60;
+      el.textContent = dd + 'D : ' + hh + 'H : ' + mm + 'M';
+    }
+    tick(); setInterval(tick, 60000);
+  })();
+
+  /* ============================================================
+     2 · HOW SATURDAY WORKS — pinned horizontal scroll
+     ============================================================ */
+  (function () {
+    var hsec = document.getElementById('hsec');
+    var track = document.getElementById('track');
+    var fill = document.getElementById('fill');
+    var plabel = document.getElementById('plabel');
+    if (!hsec || !track) return;
+    var PANELS = 5, travel = (PANELS - 1) * 100, lastStep = 0;   // 5 real .panel divs × 100vw → scroll panel 1→5 = 400vw
+    var CSS_DRIVES = !!(window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()'));   // when true, CSS view-timeline moves track+fill on the compositor; JS only updates #plabel
+    onScroll(
+      function (y) {
+        if (M.hsecH == null) return null;
+        return Math.min(Math.max((y - M.hsecTop) / (M.hsecH - M.vh), 0), 1);
+      },
+      function (p) {
+        if (p == null) return;
+        if (!CSS_DRIVES && !REDUCED) {
+          track.style.transform = 'translate3d(-' + (p * (M.hsecTravel != null ? M.hsecTravel : travel)) + 'vw,0,0)';
+          fill.style.transform = 'scaleX(' + p + ')';   // compositor scale (no per-frame layout) — smoother on mobile
+        }
+        var step = Math.min(PANELS, Math.floor(p * PANELS) + 1);
+        if (step !== lastStep) { plabel.textContent = 'Step ' + step + ' of ' + PANELS; lastStep = step; }
+      }
+    );
+  })();
+
+  /* ============================================================
+     1.5 · APPRECIATION — pin + light up words one at a time on scroll
+     ============================================================ */
+  (function () {
+    var appr = document.getElementById('appreciation');
+    if (!appr) return;
+    var lines = [].slice.call(appr.querySelectorAll('.appr-line'));
+    var words = [];
+    lines.forEach(function (line) {
+      var parts = line.textContent.trim().split(/\s+/);
+      line.textContent = '';
+      parts.forEach(function (p, i) {
+        var s = document.createElement('span');
+        s.className = 'w'; s.textContent = p;
+        line.appendChild(s);
+        if (i < parts.length - 1) line.appendChild(document.createTextNode(' '));
+        words.push(s);
+      });
+    });
+    if (REDUCED) { words.forEach(function (w) { w.classList.add('lit'); }); return; }
+    var litCount = -1;
+    onScroll(
+      function (y) {
+        if (M.apprTop == null) return null;
+        var dist = M.apprH - M.vh;
+        return dist <= 0 ? 1 : Math.max(0, Math.min(1, (y - M.apprTop) / dist));
+      },
+      function (prog) {
+        if (prog == null) return;
+        var target = Math.round(Math.min(1, prog / 0.85) * words.length); // all lit by 85% of the pin
+        if (target === litCount) return;
+        litCount = target;
+        for (var i = 0; i < words.length; i++) words[i].classList.toggle('lit', i < target);
+      }
+    );
+  })();
+
+  /* ============================================================
+     3 · MENU — blank, then header, then groups one by one, seal last.
+        IntersectionObserver = reveals fire when each element is
+        actually in view (visible), independent of scroll speed.
+     ============================================================ */
+  (function () {
+    var menu = document.getElementById('menu');
+    if (!menu) return;
+    var head = menu.querySelector('.m-head');
+    var seal = menu.querySelector('.seal-wrap');
+    var groups = [].slice.call(menu.querySelectorAll('.group'))
+      .sort(function (a, b) { return (+a.dataset.reveal || 0) - (+b.dataset.reveal || 0); });
+
+    if (REDUCED) { // everything visible, no motion (CSS also covers this)
+      if (head) head.classList.add('in');
+      groups.forEach(function (g) { g.classList.add('in'); });
+      if (seal) seal.classList.add('in');
+      return;
+    }
+
+    if (head) {
+      var hIO = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { head.classList.add('in'); hIO.disconnect(); } });
+      }, { threshold: 0.4 });
+      hIO.observe(head);
+    }
+
+    var lastGroup = groups[groups.length - 1];
+    var gIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          gIO.unobserve(e.target);
+          if (e.target === lastGroup && seal) setTimeout(function () { seal.classList.add('in'); }, 320); // seal last
+        }
+      });
+    }, { threshold: 0.25, rootMargin: '0px 0px -18% 0px' });
+    groups.forEach(function (g) { gIO.observe(g); });
+  })();
+
+  /* ---------- Sticky "hold" tops for the two cover-reveals (Menu, then About).
+       Each pins so the next section can rise up and fully cover it. ---------- */
+  (function () {
+    var pinned = [document.getElementById('menu'), document.getElementById('about')].filter(Boolean);
+    function setTops() {
+      pinned.forEach(function (el) {
+        el.style.top = REDUCED ? '' : (window.innerHeight - el.offsetHeight) + 'px';
+      });
+    }
+    setTops();
+    // Re-pin only on a real WIDTH change (orientation/desktop resize) — NOT on mobile
+    // Safari's toolbar show/hide, whose height-only resize would re-assign the sticky
+    // top mid-scroll and jolt the menu/about cover-reveal when backtracking up.
+    var _lastW = window.innerWidth;
+    window.addEventListener('resize', function () { if (window.innerWidth === _lastW) return; _lastW = window.innerWidth; setTops(); }, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTops(); scheduleMeasure(); });
+  })();
+
+  /* ============================================================
+     4 · ABOUT — settle in, photo parallax (rAF loop), crew one-by-one
+     ============================================================ */
+  (function () {
+    var about = document.getElementById('about');
+    if (!about) return;
+
+    var aboutIO = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { about.classList.add('in'); aboutIO.disconnect(); } });
+    }, { threshold: 0.12 });
+    aboutIO.observe(about);
+    // (A3) the About photo scrolls normally with the page — no parallax transform.
+
+    var crew = document.getElementById('crew');
+    if (crew) {
+      var members = [].slice.call(document.querySelectorAll('.about .member'));
+      var cio = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); cio.unobserve(e.target); } });
+      }, { threshold: .35, rootMargin: '0px 0px -8% 0px' });
+      members.forEach(function (m) { cio.observe(m); });
+    }
+  })();
+
+  /* ============================================================
+     5 · GALLERY — ticker, polaroid reveal, cursor parallax
+     ============================================================ */
+  (function () {
+    var trackEl = document.getElementById('tickerTrack');
+    var field = document.getElementById('field');
+    var gal = document.getElementById('gal');
+    if (!gal) return;
+
+    if (trackEl) {
+      var phrases = ['Fresh every Saturday', 'See you on the porch', 'Baked a little bit at a time'];
+      var sun = '<span class="sun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.1 5.1l1.7 1.7M17.2 17.2l1.7 1.7M18.9 5.1l-1.7 1.7M6.8 17.2l-1.7 1.7" stroke-linecap="round"/></svg></span>';
+      var unit = '';
+      phrases.forEach(function (p) { unit += '<span>' + p + '</span>' + sun; });
+      // Tile so that ONE half of the track (the -50% animation travel) is wider
+      // than the viewport, with an even number of sets so -50% lands on a clean
+      // set boundary. That guarantees a seamless loop with no blank gap on wide
+      // screens (the old fixed 2x duplication left empty space once vw > one set).
+      function buildTicker() {
+        if (REDUCED) { trackEl.innerHTML = sun + '<span>See you on the porch</span>' + sun; return; }   // static: one centered phrase flanked by two suns (CSS centers it) — no tiling without the loop
+        trackEl.innerHTML = unit;
+        var setW = trackEl.getBoundingClientRect().width;
+        var vw = (document.querySelector('.ticker') || document.documentElement).getBoundingClientRect().width || window.innerWidth;
+        if (!setW) { trackEl.innerHTML = unit + unit; return; }
+        var halfSets = Math.max(1, Math.ceil(vw / setW) + 1);
+        var html = ''; for (var r = 0; r < halfSets * 2; r++) html += unit;
+        trackEl.innerHTML = html;
+        // keep a steady ~40px/sec regardless of how wide it tiled
+        trackEl.style.animationDuration = Math.max(18, Math.round((setW * halfSets) / 40)) + 's';
+      }
+      buildTicker();
+      var tkTimer;
+      window.addEventListener('resize', function () { clearTimeout(tkTimer); tkTimer = setTimeout(buildTicker, 200); }, { passive: true });
+    }
+
+    var pols = [].slice.call(document.querySelectorAll('.gal .pol'));
+    var isMobile = function () { return window.matchMedia('(max-width:860px)').matches; };
+
+    if (REDUCED) {
+      pols.forEach(function (p) { p.style.opacity = 1; if (!isMobile()) p.style.transform = 'rotate(' + p.dataset.rot + 'deg)'; p.dataset.ready = '1'; });
+      return;
+    }
+
+    pols.forEach(function (p) {
+      if (!isMobile()) { p.style.transition = 'opacity .7s ease-out, transform .7s cubic-bezier(.2,.8,.25,1)'; p.style.transform = 'translateY(34px) rotate(' + p.dataset.rot + 'deg)'; }
+    });
+
+    // Each polaroid animates in as IT scrolls into view (scroll-progression,
+    // like the crew cards) — not all at once when the container first appears.
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var p = e.target;
+        p.style.opacity = 1; if (!isMobile()) p.style.transform = 'rotate(' + p.dataset.rot + 'deg)';
+        setTimeout(function () { p.style.transition = 'opacity .7s ease-out, box-shadow .35s ease'; p.dataset.ready = '1'; }, 720);
+        io.unobserve(p);
+      });
+    }, { threshold: .35, rootMargin: '0px 0px -8% 0px' });
+    pols.forEach(function (p) { io.observe(p); });
+
+    var geo = [];
+    function gmeasure() { var fr = field.getBoundingClientRect(), cx = fr.left + fr.width / 2; geo = pols.map(function (p) { var r = p.getBoundingClientRect(); return { hSign: ((r.left + r.width / 2) - cx) < 0 ? -1 : 1, h: 14, v: 12 }; }); }
+    gmeasure(); window.addEventListener('resize', gmeasure, { passive: true });
+
+    var tx = 0, ty = 0, cxv = 0, cyv = 0, mraf = null, inView = false, hoverDirty = false;
+    function onMove(e) {
+      if (isMobile() || !inView) return;
+      var r = gal.getBoundingClientRect();
+      tx = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (r.width / 2)));
+      ty = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (r.height / 2)));
+      if (!mraf) mraf = requestAnimationFrame(mtick);
+    }
+    function mtick() {
+      cxv += (tx - cxv) * 0.08; cyv += (ty - cyv) * 0.08;
+      pols.forEach(function (p, i) {
+        if (p.dataset.ready !== '1') return;
+        var g = geo[i] || { hSign: 1, h: 14, v: 12 }, sc = p.dataset.hover === '1' ? ' scale(1.045)' : '';
+        p.style.transform = 'translate(' + ((-cxv) * g.h * g.hSign) + 'px,' + (cyv * g.v) + 'px) rotate(' + p.dataset.rot + 'deg)' + sc;
+      });
+      if (Math.abs(tx - cxv) > 0.001 || Math.abs(ty - cyv) > 0.001 || hoverDirty) { hoverDirty = false; mraf = requestAnimationFrame(mtick); } else { mraf = null; }
+    }
+    window.addEventListener('mousemove', onMove, { passive: true });
+    var viewIO = new IntersectionObserver(function (es) { es.forEach(function (e) { inView = e.isIntersecting; if (!inView) { tx = 0; ty = 0; if (!mraf) mraf = requestAnimationFrame(mtick); } }); }, { threshold: 0 });
+    viewIO.observe(gal);
+    pols.forEach(function (p) {
+      p.addEventListener('mouseenter', function () { if (isMobile()) return; p.dataset.hover = '1'; hoverDirty = true; if (!mraf) mraf = requestAnimationFrame(mtick); });
+      p.addEventListener('mouseleave', function () { p.dataset.hover = ''; hoverDirty = true; if (!mraf) mraf = requestAnimationFrame(mtick); });
+    });
+  })();
+
+  /* ============================================================
+     6 · A LITTLE LOVE LATELY — count-ups + softened review carousel
+     ============================================================ */
+  (function () {
+    var nums = [].slice.call(document.querySelectorAll('.love .num'));
+    function countUp(el) {
+      var to = +el.dataset.to, val = el.querySelector('.val'); if (!val) return;
+      var t0 = null;
+      function step(ts) { if (!t0) t0 = ts; var p = Math.min((ts - t0) / 1400, 1), e = 1 - Math.pow(1 - p, 3); val.textContent = Math.round(to * e); if (p < 1) requestAnimationFrame(step); }
+      requestAnimationFrame(step);
+    }
+    if (REDUCED) { nums.forEach(function (n) { var v = n.querySelector('.val'); if (v) v.textContent = n.dataset.to; }); }
+    else if (nums.length) {
+      // Fire BOTH counters together the moment the stats scroll into view. Observe
+      // the .feature container (the .stats wrapper is zero-height — its tabs are
+      // absolutely positioned — so observing it directly was unreliable). A single
+      // fired-once guard means it never re-triggers and never fires early on load.
+      nums.forEach(function (n) { var v = n.querySelector('.val'); if (v) v.textContent = '0'; }); // guaranteed 0 start
+      var statsAnchor = document.querySelector('.love .feature') || nums[0];
+      var fired = false;
+      function runCounts() { if (fired) return; fired = true; nums.forEach(countUp); if (sIO) sIO.disconnect(); }
+      var sIO = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting && e.intersectionRatio > 0) runCounts(); });
+      }, { threshold: [0.25, 0.5] });
+      sIO.observe(statsAnchor);
+    }
+
+    // reviews: hold, fade OUT to empty, beat, fade IN next (softer, slower)
+    var reviewsEl = document.getElementById('reviews');
+    var dotsEl = document.getElementById('reviewDots');
+    if (reviewsEl) {
+      var revs = [].slice.call(reviewsEl.querySelectorAll('.review'));
+      var dots = [];
+      if (dotsEl && revs.length) revs.forEach(function (_, i) {
+        var d = document.createElement('button');
+        d.className = 'rev-dot'; d.type = 'button'; d.setAttribute('aria-label', 'Show review ' + (i + 1));
+        d.addEventListener('click', function () { jump(i); });
+        dotsEl.appendChild(d); dots.push(d);
+      });
+
+      var idx = 0, t1 = null, t2 = null;
+      var HOLD = 5500; // review holds fully visible
+      function setDots() { dots.forEach(function (d, i) { d.classList.toggle('active', i === idx); }); }
+      function show(i) { revs.forEach(function (r, k) { r.classList.toggle('active', k === i); }); setDots(); }
+      function cycle() {
+        if (REDUCED || revs.length < 2) return;
+        clearTimeout(t1); clearTimeout(t2);
+        t1 = setTimeout(function () {              // fade current OUT (.8s)
+          revs[idx].classList.remove('active');
+          t2 = setTimeout(function () {            // ...hold blank ~0.5s, then fade next IN
+            idx = (idx + 1) % revs.length; show(idx);
+            cycle();
+          }, 1300);                                // .8s fade-out + ~.5s blank
+        }, HOLD);
+      }
+      function jump(i) { idx = i; show(idx); cycle(); }
+      if (revs.length) { show(0); cycle(); }
+    }
+  })();
+
+  /* ============================================================
+     6.5 · PRESS LOGOS — reveal one-by-one on scroll into view.
+        Kelly Clarkson is last in the DOM, so it animates in last.
+     ============================================================ */
+  (function () {
+    var row = document.getElementById('plRow');
+    if (!row) return;
+    var logos = [].slice.call(row.querySelectorAll('.pl-item'));
+    if (!logos.length) return;
+    if (REDUCED) { logos.forEach(function (l) { l.classList.add('in'); }); return; }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) {
+          logos.forEach(function (l, i) { setTimeout(function () { l.classList.add('in'); }, i * 170); });
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    io.observe(row);
+  })();
+
+  /* ============================================================
+     6.6 · CUSTOM CAKES — subtle depth parallax. Each photo drifts
+        vertically within its (overflow-clipped) frame at a slightly
+        different rate than the page. Reduced motion = static (CSS).
+     ============================================================ */
+  (function () {
+    if (REDUCED) return;                 // CSS base transform stays = static framing
+    var sec = document.getElementById('cakes');
+    var top = document.getElementById('cakeTop');
+    var tall = document.getElementById('cakeTall');
+    if (!sec || (!top && !tall)) return;
+    var VIEW_CSS = !!(window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()'));  // when true, CSS view-timeline drives the parallax on the compositor — skip the JS transform writes
+    if (VIEW_CSS) return;                 // CSS is driving the drift; nothing for JS to do here
+    var items = [];
+    if (top) items.push({ el: top, base: 'translate3d(0,', tail: '%,0) scale(1.12)', amp: 5 });     // amp < scale-overflow so the frame edge never shows
+    if (tall) items.push({ el: tall, base: 'translate3d(0,', tail: '%,0) scale(1.05)', amp: 2.3 });  // gentle so the flowers stay uncut
+    var lastP = null;
+    onScroll(
+      function (y) {
+        if (M.cakesTop == null || M.vh == null) return null;
+        var topInView = M.cakesTop - y;                            // section top vs viewport — CACHED metrics, no per-frame layout read
+        if (topInView > M.vh || topInView + M.cakesH < 0) return null;   // off-screen → skip the writes entirely
+        return ((M.vh / 2) - (topInView + M.cakesH / 2)) / M.vh;   // ~ -1 entering → +1 leaving
+      },
+      function (prog) {
+        if (prog == null) return;
+        var p = Math.max(-1, Math.min(1, prog));
+        if (lastP !== null && Math.abs(p - lastP) < 0.0008) return; // skip imperceptible updates
+        lastP = p;
+        items.forEach(function (it) { it.el.style.transform = it.base + (p * it.amp).toFixed(2) + it.tail; });
+      }
+    );
+  })();
+
+  /* ============================================================
+     7 · VISIT — FAQ accordion (opening one auto-closes the rest)
+     ============================================================ */
+  (function () {
+    var qs = [].slice.call(document.querySelectorAll('.visit .faq-q'));
+    qs.forEach(function (q) {
+      q.addEventListener('click', function () {
+        var wasOpen = q.getAttribute('aria-expanded') === 'true';
+        qs.forEach(function (o) { o.setAttribute('aria-expanded', 'false'); o.nextElementSibling.style.maxHeight = '0px'; });
+        if (!wasOpen) { q.setAttribute('aria-expanded', 'true'); var a = q.nextElementSibling; a.style.maxHeight = a.scrollHeight + 'px'; }
+      });
+    });
+  })();
+
+  /* ============================================================
+     8 · FOOTER — Crumblr two-curtain close (rAF loop)
+     ============================================================ */
+  (function () {
+    var footer = document.querySelector('.footer');
+    if (!footer) return;
+    var top = footer.querySelector('.curtain-top');
+    var bot = footer.querySelector('.curtain-bottom');
+    var inner = footer.querySelector('.f-inner');
+    var floor = document.getElementById('footerfloor');
+    if (REDUCED || !top || !bot) {
+      if (top) top.style.transform = 'translate3d(0,0,0)';
+      if (bot) bot.style.transform = 'translate3d(0,0,0)';
+      if (inner) inner.style.opacity = 1;
+      return;
+    }
+    var VIEW_CSS = !!(window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()'));  // when true, CSS view-timeline drives the curtains + .f-inner; JS only keeps #footerfloor (fixed element, stays on JS)
+    onScroll(
+      function (y) { if (M.footerTop == null) return null; var ft = M.footerTop - y; return Math.max(0, Math.min(1, (M.vh - ft) / M.vh)); },
+      function (p) {
+        if (p == null) return;
+        var cp = Math.min(1, p / 0.95);  // panels travel as the footer enters, MEET right as it fills the viewport
+        if (!VIEW_CSS) {
+          top.style.transform = 'translate3d(0,' + (-100 + cp * 100) + '%,0)';
+          bot.style.transform = 'translate3d(0,' + (100 - cp * 100) + '%,0)';
+          if (inner) inner.style.opacity = 0.06 + 0.94 * Math.max(0, Math.min(1, (p - 0.3) / 0.6));
+        }
+        if (floor) floor.style.opacity = Math.max(0, Math.min(1, (cp - 0.5) * 2));   // pine backstop fades in as the footer fills — stays on JS (fixed element)
+      }
+    );
+  })();
+
+  /* ============================================================
+     CUSTOM RING CURSOR — hero only, pointer devices, after boot
+     ============================================================ */
+  (function () {
+    if (REDUCED) return;
+    if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return; // pointer devices only
+    var cursor = document.getElementById('cursor');
+    var hero = document.getElementById('top');
+    if (!cursor || !hero) return;
+    var inHero = false, x = 0, y = 0, raf = null;
+    function render() { cursor.style.transform = 'translate3d(' + x + 'px,' + y + 'px,0)'; raf = null; }
+    window.addEventListener('mousemove', function (e) {
+      x = e.clientX; y = e.clientY;
+      if (inHero && !raf) raf = requestAnimationFrame(render);
+      if (inHero && !cursor.classList.contains('on')) { cursor.classList.add('on'); document.body.classList.add('hero-cursor'); }
+    }, { passive: true });
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        inHero = e.isIntersecting && e.intersectionRatio >= 0.5;
+        if (!inHero) { cursor.classList.remove('on'); document.body.classList.remove('hero-cursor'); }
+      });
+    }, { threshold: [0, 0.5, 1] });
+    io.observe(hero);
+  })();
+
+  /* ---------- initial measure (after layout settles) ---------- */
+  measure();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleMeasure);
+  window.addEventListener('load', scheduleMeasure);
+
+})();
+</script>
+</body>
+</html>
